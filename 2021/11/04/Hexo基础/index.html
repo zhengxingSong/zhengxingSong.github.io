@@ -79,20 +79,18 @@
 
 
 
-<meta name="description" content="HexoHexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。 官方中文文档：https:&#x2F;&#x2F;hexo.io&#x2F;zh-cn&#x2F;docs&#x2F; 安装安装 Hexo 相当简单，只需要先安装下列应用程序即可：  Nodejs Git  安装Hexo1npm install -g hexo-cli   Node.js 版本">
+<meta name="description" content="热爱生活的人必定不会被生活所抛弃">
 <meta property="og:type" content="article">
-<meta property="og:title" content="阿狒的博客">
+<meta property="og:title" content="Hexo基础">
 <meta property="og:url" content="http://example.com/2021/11/04/Hexo%E5%9F%BA%E7%A1%80/index.html">
 <meta property="og:site_name" content="阿狒的博客">
-<meta property="og:description" content="HexoHexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。 官方中文文档：https:&#x2F;&#x2F;hexo.io&#x2F;zh-cn&#x2F;docs&#x2F; 安装安装 Hexo 相当简单，只需要先安装下列应用程序即可：  Nodejs Git  安装Hexo1npm install -g hexo-cli   Node.js 版本">
+<meta property="og:description" content="热爱生活的人必定不会被生活所抛弃">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/Volumes/Flower0501/picture/Hexo/Hexo的Nodejs版本限制.png">
-<meta property="article:published_time" content="2021-11-04T13:27:41.070Z">
-<meta property="article:modified_time" content="2021-11-04T13:27:41.082Z">
+<meta property="article:published_time" content="2021-11-04T13:30:25.000Z">
+<meta property="article:modified_time" content="2021-11-04T13:30:25.986Z">
 <meta property="article:author" content="SZX">
 <meta property="article:tag" content="独行者">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/Volumes/Flower0501/picture/Hexo/Hexo的Nodejs版本限制.png">
 
 
 
@@ -128,7 +126,7 @@
 
 
 
-  <title> | 阿狒的博客</title>
+  <title>Hexo基础 | 阿狒的博客</title>
   
 
 
@@ -252,7 +250,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline"></h1>
+          <h1 class="post-title" itemprop="name headline">Hexo基础</h1>
         
 
         <div class="post-meta">
@@ -264,7 +262,7 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-11-04T21:27:41+08:00">
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-11-04T21:30:25+08:00">
                 2021-11-04
               </time>
             
@@ -302,331 +300,7 @@
       
 
       
-        <h1 id="Hexo"><a href="#Hexo" class="headerlink" title="Hexo"></a>Hexo</h1><p>Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 <a target="_blank" rel="noopener" href="http://daringfireball.net/projects/markdown/">Markdown</a>（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。</p>
-<p>官方中文文档：<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/">https://hexo.io/zh-cn/docs/</a></p>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>安装 Hexo 相当简单，只需要先安装下列应用程序即可：</p>
-<ul>
-<li>Nodejs</li>
-<li>Git</li>
-</ul>
-<h3 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>Node.js 版本限制</p>
-<img src="/Volumes/Flower0501/picture/Hexo/Hexo的Nodejs版本限制.png" alt="image-20211104203359049" style="zoom:67%;" />
-</blockquote>
-<h2 id="建站"><a href="#建站" class="headerlink" title="建站"></a>建站</h2><p>先建立自己的博客所在文件夹&lt;folder&gt;：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo init &lt;folder&gt;</span><br><span class="line">cd &lt;folder&gt;</span><br><span class="line">npm install</span><br></pre></td></tr></table></figure>
-
-<p>新建完成后，指定文件夹的目录如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">.</span><br><span class="line">├── _config.yml  # 站点配置文件</span><br><span class="line">├── package.json</span><br><span class="line">├── scaffolds</span><br><span class="line">├── source</span><br><span class="line">|   ├── _drafts</span><br><span class="line">|   └── _posts</span><br><span class="line">└── themes</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>_config.yml</strong></li>
-</ul>
-<p>主目录下的_config.yml文件为站点配置文件，而theme主题下的_config.yml为主题配置文件</p>
-<ul>
-<li><strong>package.json</strong></li>
-</ul>
-<p>应用程序的信息。<a target="_blank" rel="noopener" href="https://ejs.co/">EJS</a>, <a target="_blank" rel="noopener" href="http://learnboost.github.io/stylus/">Stylus</a> 和 <a target="_blank" rel="noopener" href="http://daringfireball.net/projects/markdown/">Markdown</a> renderer 已默认安装，您可以自由移除。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">package.json</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  &quot;name&quot;: &quot;hexo-site&quot;,</span><br><span class="line">  &quot;version&quot;: &quot;0.0.0&quot;,</span><br><span class="line">  &quot;private&quot;: true,</span><br><span class="line">  &quot;hexo&quot;: &#123;</span><br><span class="line">    &quot;version&quot;: &quot;&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;dependencies&quot;: &#123;</span><br><span class="line">    &quot;hexo&quot;: &quot;^3.8.0&quot;,</span><br><span class="line">    &quot;hexo-generator-archive&quot;: &quot;^0.1.5&quot;,</span><br><span class="line">    &quot;hexo-generator-category&quot;: &quot;^0.1.3&quot;,</span><br><span class="line">    &quot;hexo-generator-index&quot;: &quot;^0.2.1&quot;,</span><br><span class="line">    &quot;hexo-generator-tag&quot;: &quot;^0.2.0&quot;,</span><br><span class="line">    &quot;hexo-renderer-ejs&quot;: &quot;^0.3.1&quot;,</span><br><span class="line">    &quot;hexo-renderer-stylus&quot;: &quot;^0.3.3&quot;,</span><br><span class="line">    &quot;hexo-renderer-marked&quot;: &quot;^0.3.2&quot;,</span><br><span class="line">    &quot;hexo-server&quot;: &quot;^0.3.3&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>scaffolds</strong></li>
-</ul>
-<p><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/writing">模版</a> 文件夹。当您新建文章时，Hexo 会根据 scaffold 来建立文件。</p>
-<p>Hexo的模板是指在新建的文章文件中默认填充的内容。例如，如果您修改scaffold/post.md中的Front-matter内容，那么每次新建一篇文章时都会包含这个修改。</p>
-<p>这个目录很重要，新建的文章都是在保存在这个目录下的，有两个子目录：<code>_drafts</code>，<code>_posts</code>。需要新建的博文都放在<code>_posts</code>目录下。  </p>
-<p><code>_posts</code>目录下是一个个<code>markdown</code>文件。你应该可以看到一个<code>hello-world.md</code>的文件，文章就在这个文件中编辑。  </p>
-<p><code>_posts</code>目录下的md文件，会被编译成html文件，放到<code>public</code>（此文件现在应该没有，因为你还没有编译过）文件夹下。</p>
-<p>包含以下三个文件：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">draft.md  page.md  post.md</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>source</strong></li>
-</ul>
-<p>资源文件夹是存放用户资源的地方。除 <code>_posts</code> 文件夹之外，开头命名为 <code>_</code> (下划线)的文件 / 文件夹和隐藏的文件将会被忽略。Markdown 和 HTML 文件会被解析并放到 <code>public</code> 文件夹，而其他文件会被拷贝过去。</p>
-<ul>
-<li><strong>themes</strong></li>
-</ul>
-<p>主题文件夹。Hexo 会根据主题来生成静态页面。</p>
-<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>可以在 <code>_config.yml</code> 中修改大部分的配置。</p>
-<h3 id="网站"><a href="#网站" class="headerlink" title="网站"></a>网站</h3><p>网站配置:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Site</span></span><br><span class="line">title: 阿狒的博客</span><br><span class="line">subtitle: &#x27;&#x27;</span><br><span class="line">description: 热爱生活的人必定不会被生活所抛弃</span><br><span class="line">keywords: 独行者</span><br><span class="line">author: SZX</span><br><span class="line">language: zh-CN</span><br><span class="line">timezone: Asia/Shanghai</span><br></pre></td></tr></table></figure>
-
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>title</code></td>
-<td>网站标题</td>
-</tr>
-<tr>
-<td><code>subtitle</code></td>
-<td>网站副标题</td>
-</tr>
-<tr>
-<td><code>description</code></td>
-<td>网站描述</td>
-</tr>
-<tr>
-<td><code>keywords</code></td>
-<td>网站的关键词。支持多个关键词。</td>
-</tr>
-<tr>
-<td><code>author</code></td>
-<td>您的名字</td>
-</tr>
-<tr>
-<td><code>language</code></td>
-<td>网站使用的语言。对于简体中文用户来说，使用不同的主题可能需要设置成不同的值，请参考你的主题的文档自行设置，常见的有 <code>zh-Hans</code>和 <code>zh-CN</code>。</td>
-</tr>
-<tr>
-<td><code>timezone</code></td>
-<td>网站时区。Hexo 默认使用您电脑的时区。请参考 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones">时区列表</a> 进行设置，如 <code>America/New_York</code>, <code>Japan</code>, 和 <code>UTC</code> 。一般的，对于中国大陆地区可以使用 <code>Asia/Shanghai</code>。</td>
-</tr>
-</tbody></table>
-<p>其中，<code>description</code>主要用于SEO，告诉搜索引擎一个关于您站点的简单描述，通常建议在其中包含您网站的关键词。<code>author</code>参数用于主题显示文章的作者。</p>
-<h3 id="网址"><a href="#网址" class="headerlink" title="网址"></a>网址</h3><p>网址配置：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> URL</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># Set your site url here. For example, if you use GitHub Page, set url as &#x27;https://username.github.io/project&#x27;</span></span></span><br><span class="line">url: http://example.com</span><br><span class="line">permalink: :year/:month/:day/:title/</span><br><span class="line">permalink_defaults:</span><br><span class="line">pretty_urls:</span><br><span class="line">  trailing_index: true # Set to false to remove trailing &#x27;index.html&#x27; from permalinks</span><br><span class="line">  trailing_html: true # Set to false to remove trailing &#x27;.html&#x27; from permalinks</span><br></pre></td></tr></table></figure>
-
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>描述</th>
-<th>默认值</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>url</code></td>
-<td>网址, 必须以 <code>http://</code> 或 <code>https://</code> 开头</td>
-<td></td>
-</tr>
-<tr>
-<td><code>root</code></td>
-<td>网站根目录</td>
-<td><code>url&#39;s pathname</code></td>
-</tr>
-<tr>
-<td><code>permalink</code></td>
-<td>文章的 <a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/permalinks">永久链接</a> 格式</td>
-<td><code>:year/:month/:day/:title/</code></td>
-</tr>
-<tr>
-<td><code>permalink_defaults</code></td>
-<td>永久链接中各部分的默认值</td>
-<td></td>
-</tr>
-<tr>
-<td><code>pretty_urls</code></td>
-<td>改写 <a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/variables"><code>permalink</code></a> 的值来美化 URL</td>
-<td></td>
-</tr>
-<tr>
-<td><code>pretty_urls.trailing_index</code></td>
-<td>是否在永久链接中保留尾部的 <code>index.html</code>，设置为 <code>false</code> 时去除</td>
-<td><code>true</code></td>
-</tr>
-<tr>
-<td><code>pretty_urls.trailing_html</code></td>
-<td>是否在永久链接中保留尾部的 <code>.html</code>, 设置为 <code>false</code> 时去除 (<em>对尾部的 <code>index.html</code>无效</em>)</td>
-<td><code>true</code></td>
-</tr>
-</tbody></table>
-<h3 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h3><p>目录配置：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Directory</span></span><br><span class="line">source_dir: source</span><br><span class="line">public_dir: public</span><br><span class="line">tag_dir: tags</span><br><span class="line">archive_dir: archives</span><br><span class="line">category_dir: categories</span><br><span class="line">code_dir: downloads/code</span><br><span class="line">i18n_dir: :lang</span><br><span class="line">skip_render:</span><br></pre></td></tr></table></figure>
-
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>描述</th>
-<th>默认值</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>source_dir</code></td>
-<td>资源文件夹，这个文件夹用来存放内容。</td>
-<td><code>source</code></td>
-</tr>
-<tr>
-<td><code>public_dir</code></td>
-<td>公共文件夹，这个文件夹用于存放生成的站点文件。</td>
-<td><code>public</code></td>
-</tr>
-<tr>
-<td><code>tag_dir</code></td>
-<td>标签文件夹</td>
-<td><code>tags</code></td>
-</tr>
-<tr>
-<td><code>archive_dir</code></td>
-<td>归档文件夹</td>
-<td><code>archives</code></td>
-</tr>
-<tr>
-<td><code>category_dir</code></td>
-<td>分类文件夹</td>
-<td><code>categories</code></td>
-</tr>
-<tr>
-<td><code>code_dir</code></td>
-<td>Include code 文件夹，<code>source_dir</code> 下的子目录</td>
-<td><code>downloads/code</code></td>
-</tr>
-<tr>
-<td><code>i18n_dir</code></td>
-<td>国际化（i18n）文件夹</td>
-<td><code>:lang</code></td>
-</tr>
-<tr>
-<td><code>skip_render</code></td>
-<td>跳过指定文件的渲染。匹配到的文件将会被不做改动地复制到 <code>public</code> 目录中。您可使用 <a target="_blank" rel="noopener" href="https://github.com/micromatch/micromatch#extended-globbing">glob 表达式</a>来匹配路径。</td>
-<td></td>
-</tr>
-</tbody></table>
-<h3 id="文章"><a href="#文章" class="headerlink" title="文章"></a>文章</h3><p>文章配置：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Writing</span></span><br><span class="line">new_post_name: :title.md # File name of new posts</span><br><span class="line">default_layout: post</span><br><span class="line">titlecase: false # Transform title into titlecase</span><br><span class="line">external_link:</span><br><span class="line">  enable: true # Open external links in new tab</span><br><span class="line">  field: site # Apply to the whole site</span><br><span class="line">  exclude: &#x27;&#x27;</span><br><span class="line">filename_case: 0</span><br><span class="line">render_drafts: false</span><br><span class="line">post_asset_folder: false</span><br><span class="line">relative_link: false</span><br><span class="line">future: true</span><br><span class="line">highlight:</span><br><span class="line">  enable: true</span><br><span class="line">  line_number: true</span><br><span class="line">  auto_detect: false</span><br><span class="line">  tab_replace: &#x27;&#x27;</span><br><span class="line">  wrap: true</span><br><span class="line">  hljs: false</span><br><span class="line">prismjs:</span><br><span class="line">  enable: false</span><br><span class="line">  preprocess: true</span><br><span class="line">  line_number: true</span><br><span class="line">  tab_replace: &#x27;&#x27;</span><br></pre></td></tr></table></figure>
-
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>描述</th>
-<th>默认值</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>new_post_name</code></td>
-<td>新文章的文件名称</td>
-<td>:title.md</td>
-</tr>
-<tr>
-<td><code>default_layout</code></td>
-<td>预设布局</td>
-<td>post</td>
-</tr>
-<tr>
-<td><code>auto_spacing</code></td>
-<td>在中文和英文之间加入空格</td>
-<td>false</td>
-</tr>
-<tr>
-<td><code>titlecase</code></td>
-<td>把标题转换为 title case</td>
-<td>false</td>
-</tr>
-<tr>
-<td><code>external_link</code></td>
-<td>在新标签中打开链接</td>
-<td>true</td>
-</tr>
-<tr>
-<td><code>external_link.enable</code></td>
-<td>在新标签中打开链接</td>
-<td><code>true</code></td>
-</tr>
-<tr>
-<td><code>external_link.field</code></td>
-<td>对整个网站（<code>site</code>）生效或仅对文章（<code>post</code>）生效</td>
-<td><code>site</code></td>
-</tr>
-<tr>
-<td><code>external_link.exclude</code></td>
-<td>需要排除的域名。主域名和子域名如 <code>www</code> 需分别配置</td>
-<td><code>[]</code></td>
-</tr>
-<tr>
-<td><code>filename_case</code></td>
-<td>把文件名称转换为 (1) 小写或 (2) 大写</td>
-<td>0</td>
-</tr>
-<tr>
-<td><code>render_drafts</code></td>
-<td>显示草稿</td>
-<td>false</td>
-</tr>
-<tr>
-<td><code>post_asset_folder</code></td>
-<td>启动 <a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/asset-folders">Asset 文件夹</a></td>
-<td>false</td>
-</tr>
-<tr>
-<td><code>relative_link</code></td>
-<td>把链接改为与根目录的相对位址</td>
-<td>false</td>
-</tr>
-<tr>
-<td><code>future</code></td>
-<td>显示未来的文章</td>
-<td>true</td>
-</tr>
-<tr>
-<td><code>highlight</code></td>
-<td>代码块的设置, 请参考 <a target="_blank" rel="noopener" href="https://hexo.io/docs/syntax-highlight#Highlight-js">Highlight.js</a> 进行设置</td>
-<td></td>
-</tr>
-<tr>
-<td><code>prismjs</code></td>
-<td>代码块的设置, 请参考 <a target="_blank" rel="noopener" href="https://hexo.io/docs/syntax-highlight#PrismJS">PrismJS</a> 进行设置</td>
-<td></td>
-</tr>
-</tbody></table>
-<h3 id="分类和标签"><a href="#分类和标签" class="headerlink" title="分类和标签"></a>分类和标签</h3><p>配置如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Category &amp; Tag</span></span><br><span class="line">default_category: uncategorized</span><br><span class="line">category_map:</span><br><span class="line">tag_map:</span><br></pre></td></tr></table></figure>
-
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>描述</th>
-<th>默认值</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>default_category</code></td>
-<td>默认分类</td>
-<td><code>uncategorized</code></td>
-</tr>
-<tr>
-<td><code>category_map</code></td>
-<td>分类别名</td>
-<td></td>
-</tr>
-<tr>
-<td><code>tag_map</code></td>
-<td>标签别名</td>
-<td></td>
-</tr>
-</tbody></table>
-<h3 id="分页"><a href="#分页" class="headerlink" title="分页"></a>分页</h3><p>配置如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Pagination</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># Set per_page to 0 to disable pagination</span></span></span><br><span class="line">per_page: 10</span><br><span class="line">pagination_dir: page</span><br></pre></td></tr></table></figure>
-
-<table>
-<thead>
-<tr>
-<th>参数</th>
-<th>描述</th>
-<th>默认值</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>per_page</code></td>
-<td>每页显示的文章量 (0 = 关闭分页功能)</td>
-<td><code>10</code></td>
-</tr>
-<tr>
-<td><code>pagination_dir</code></td>
-<td>分页目录</td>
-<td><code>page</code></td>
-</tr>
-</tbody></table>
-
+        
       
     </div>
     
@@ -659,10 +333,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2021/11/04/Hexo%E5%9F%BA%E7%A1%80-1/" rel="prev" title="Hexo基础">
-                Hexo基础 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -714,17 +384,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Table of Contents
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Overview
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -739,7 +400,7 @@
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -766,22 +427,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Hexo"><span class="nav-number">1.</span> <span class="nav-text">Hexo</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">1.1.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Hexo"><span class="nav-number">1.1.1.</span> <span class="nav-text">安装Hexo</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%99"><span class="nav-number">1.2.</span> <span class="nav-text">建站</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-number">1.3.</span> <span class="nav-text">配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%AB%99"><span class="nav-number">1.3.1.</span> <span class="nav-text">网站</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E5%9D%80"><span class="nav-number">1.3.2.</span> <span class="nav-text">网址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95"><span class="nav-number">1.3.3.</span> <span class="nav-text">目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E7%AB%A0"><span class="nav-number">1.3.4.</span> <span class="nav-text">文章</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E7%B1%BB%E5%92%8C%E6%A0%87%E7%AD%BE"><span class="nav-number">1.3.5.</span> <span class="nav-text">分类和标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E9%A1%B5"><span class="nav-number">1.3.6.</span> <span class="nav-text">分页</span></a></li></ol></li></ol></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
