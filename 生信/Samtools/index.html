@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhengxingsong.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="​    samtools是一个用于操作sam和bam文件的工具合集。能够实现二进制查看、格式转换、排序及合并等功能，结合sam格式中的flag、tag等信息，还可以完成比对结果的统计汇总。同时利用linux中的grep、awk等操作命令，还可以大大扩展samtools的使用范围与功能。包含有许多命令。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Samtools">
+<meta property="og:url" content="http://zhengxingsong.github.io/%E7%94%9F%E4%BF%A1/Samtools/index.html">
+<meta property="og:site_name" content="阿狒的博客">
+<meta property="og:description" content="​    samtools是一个用于操作sam和bam文件的工具合集。能够实现二进制查看、格式转换、排序及合并等功能，结合sam格式中的flag、tag等信息，还可以完成比对结果的统计汇总。同时利用linux中的grep、awk等操作命令，还可以大大扩展samtools的使用范围与功能。包含有许多命令。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-11-08T13:29:31.000Z">
+<meta property="article:modified_time" content="2021-11-08T13:31:49.116Z">
+<meta property="article:author" content="阿狒">
+<meta property="article:tag" content="生信">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://zhengxingsong.github.io/%E7%94%9F%E4%BF%A1/Samtools/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Samtools | 阿狒的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">阿狒的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">愿热爱生活的人可以不被辜负</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">2</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">2</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">3</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/zhengxingSong" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zhengxingsong.github.io/%E7%94%9F%E4%BF%A1/Samtools/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="阿狒">
+      <meta itemprop="description" content="人这一生总会死去，你不妨大胆一些，爱一个人，攀一座山，追一个梦，是的，你不妨大胆一些。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="阿狒的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Samtools
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-11-08 21:29:31 / 修改时间：21:31:49" itemprop="dateCreated datePublished" datetime="2021-11-08T21:29:31+08:00">2021-11-08</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%94%9F%E4%BF%A1/" itemprop="url" rel="index"><span itemprop="name">生信</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>9.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>9 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>​    samtools是一个用于操作sam和bam文件的工具合集。能够实现二进制查看、格式转换、排序及合并等功能，结合sam格式中的flag、tag等信息，还可以完成比对结果的统计汇总。同时利用linux中的grep、awk等操作命令，还可以大大扩展samtools的使用范围与功能。包含有许多命令。</p>
+<span id="more"></span>
+
+
+<h2 id="下载安装"><a href="#下载安装" class="headerlink" title="下载安装"></a>下载安装</h2><ol>
+<li><p>conda安装</p>
+</li>
+<li><p>GitHub安装</p>
+</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">mkdir ~/biosoft/samtools</span><br><span class="line">cd ~/biosoft/samtools</span><br><span class="line">wget -c https://github.com/samtools/samtools/releases/download/1.9/samtools-1.9.tar.bz2</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 解压压缩包</span></span><br><span class="line">tar jxvf samtools-1.9.tar.bz2</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash">安装samtool</span></span><br><span class="line">./configure --prefix=/home/vip47/biosoft/samtools-1.9</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 对其进行编译</span></span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash">调 用方式</span></span><br><span class="line">./samtools --help</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 置入环境变量</span></span><br><span class="line">echo &#x27;export PATH=&quot;/home/vip47/biosoft/samtools-1.9/bin:$PATH&quot; &#x27; &gt;&gt;~/.bashrc</span><br><span class="line">source ~/.bashrc</span><br></pre></td></tr></table></figure>
+
+<h2 id="Samtool工具包"><a href="#Samtool工具包" class="headerlink" title="Samtool工具包"></a>Samtool工具包</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash">samtools</span></span><br><span class="line"></span><br><span class="line">Program: samtools (Tools for alignments in the SAM format)</span><br><span class="line">Version: 1.9 (using htslib 1.9)</span><br><span class="line"></span><br><span class="line">Usage:   samtools &lt;command&gt; [options]</span><br><span class="line"></span><br><span class="line">Commands:</span><br><span class="line">  -- Indexing</span><br><span class="line">     dict           create a sequence dictionary file</span><br><span class="line">     faidx          index/extract FASTA</span><br><span class="line">     fqidx          index/extract FASTQ</span><br><span class="line">     index          index alignment</span><br><span class="line"></span><br><span class="line">  -- Editing</span><br><span class="line">     calmd          recalculate MD/NM tags and &#x27;=&#x27; bases</span><br><span class="line">     fixmate        fix mate information</span><br><span class="line">     reheader       replace BAM header</span><br><span class="line">     targetcut      cut fosmid regions (for fosmid pool only)</span><br><span class="line">     addreplacerg   adds or replaces RG tags</span><br><span class="line">     markdup        mark duplicates</span><br><span class="line"></span><br><span class="line">  -- File operations</span><br><span class="line">     collate        shuffle and group alignments by name</span><br><span class="line">     cat            concatenate BAMs</span><br><span class="line">     merge          merge sorted alignments</span><br><span class="line">     mpileup        multi-way pileup</span><br><span class="line">     sort           sort alignment file</span><br><span class="line">     split          splits a file by read group</span><br><span class="line">     quickcheck     quickly check if SAM/BAM/CRAM file appears intact</span><br><span class="line">     fastq          converts a BAM to a FASTQ</span><br><span class="line">     fasta          converts a BAM to a FASTA</span><br><span class="line"></span><br><span class="line">  -- Statistics</span><br><span class="line">     bedcov         read depth per BED region</span><br><span class="line">     depth          compute the depth</span><br><span class="line">     flagstat       simple stats</span><br><span class="line">     idxstats       BAM index stats</span><br><span class="line">     phase          phase heterozygotes</span><br><span class="line">     stats          generate stats (former bamcheck)</span><br><span class="line"></span><br><span class="line">  -- Viewing</span><br><span class="line">     flags          explain BAM flags</span><br><span class="line">     tview          text alignment viewer</span><br><span class="line">     view           SAM&lt;-&gt;BAM&lt;-&gt;CRAM conversion</span><br><span class="line">     depad          convert padded BAM to unpadded BAM</span><br></pre></td></tr></table></figure>
+
+<p>​    从上面我们可以看到，大致我5类命令块：<code>Indexing</code>,<code>Editing</code>,<code>File operations</code>,<code>Statistics</code>,<code>Viewing</code>，下面我们来看看几个常用的命令</p>
+<h3 id="1-view"><a href="#1-view" class="headerlink" title="1.view"></a>1.view</h3><p>​    view命令的主要功能是：将sam文件与bam文件互换；然后对bam文件进行各种操作，比如数据的排序(sort)和提取(这些操作是对bam文件进行的，因而当输入为sam文件的时候，不能进行该操作)；最后将排序或提取得到的数据输出为bam或sam（默认的）格式。</p>
+<p>​    bam文件优点：bam文件为二进制文件，占用的磁盘空间比sam文本文件小；利用bam二进制文件的运算速度快。</p>
+<p>​    view命令中，对sam文件头部（序列ID）的输入(-t或-T）和输出(-h)是单独的一些参数来控制的。</p>
+<blockquote>
+<p>Usage: samtools view [options] | [region1 […]]<br>下面的view命令的部分参数<br>默认情况下不加 region，则是输出所有的 region.options:</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">-b output BAM  </span><br><span class="line"><span class="meta">#</span><span class="bash"> 该参数设置输出 BAM 格式，默认下输出是 SAM 格式文件</span></span><br><span class="line">-h print header for the SAM output </span><br><span class="line"><span class="meta">#</span><span class="bash"> 默认下输出的 sam 格式文件不带 header，该参数设定输出sam文件时带 header 信息</span> </span><br><span class="line">-H print SAM header only (no alignments)  </span><br><span class="line"><span class="meta">#</span><span class="bash"> 仅仅输出文件的头文件</span></span><br><span class="line">-S input is SAM  </span><br><span class="line"><span class="meta">#</span><span class="bash"> 默认下输入是 BAM 文件，若是输入是 SAM 文件，则最好加该参数，否则有时候会报错。</span> </span><br><span class="line">-u uncompressed BAM output (force -b)  </span><br><span class="line"><span class="meta">#</span><span class="bash"> 该参数的使用需要有-b参数，能节约时间，但是需要更多磁盘空间。</span> </span><br><span class="line">-c print only the count of matching records</span><br><span class="line"><span class="meta">#</span><span class="bash"> 仅输出匹配的统计记录</span> </span><br><span class="line">-L FILE  only include reads overlapping this BED FILE [null] </span><br><span class="line"><span class="meta">#</span><span class="bash">  仅包括和bed文件存在overlap的reads</span></span><br><span class="line">-o FILE  output file name [stdout] </span><br><span class="line"><span class="meta">#</span><span class="bash"> 输出文件的名称</span></span><br><span class="line">-F INT  only include reads with none of the FLAGS in INT present [0] </span><br><span class="line"><span class="meta">#</span><span class="bash"> 过滤flag，仅输出指定FLAG值的序列</span></span><br><span class="line">-q INT   only include reads with mapping quality &gt;= INT [0]    </span><br><span class="line"><span class="meta">#</span><span class="bash"> 比对的最低质量值，一般认为20就为unique比对了，可以结合上述-bF参数使用使用提取特定的比对结果</span></span><br><span class="line">-@ Number of additional threads to use [0]</span><br><span class="line"><span class="meta">#</span><span class="bash"> 指使用的线程数</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">Options: -b       output BAM # 输出文件格式为BAM</span><br><span class="line">         -h       print header for the SAM output # 为SAM输出格式打印SAM头部文件</span><br><span class="line">         -H       print header only (no alignments) # 仅仅打印头部文件</span><br><span class="line">         -S       input is SAM #输入文件格式为SAM</span><br><span class="line">         -u       uncompressed BAM output (force -b)  # 无压缩的BAM格式</span><br><span class="line">         -1       fast compression (force -b)	## 快速压缩格式</span><br><span class="line">         -x       output FLAG in HEX (samtools-C specific)</span><br><span class="line">         -X       output FLAG in string (samtools-C specific)</span><br><span class="line">         -c       print only the count of matching records</span><br><span class="line">         -B       collapse the backward CIGAR operation</span><br><span class="line">         -@ INT   number of BAM compression threads [0]</span><br><span class="line">         -L FILE  output alignments overlapping the input BED FILE [null]</span><br><span class="line">         -t FILE  list of reference names and lengths (force -S) [null]</span><br><span class="line">         -T FILE  reference sequence file (force -S) [null]</span><br><span class="line">         -o FILE  output file name [stdout]</span><br><span class="line">         -R FILE  list of read groups to be outputted [null]</span><br><span class="line">         -f INT   required flag, 0 for unset [0]</span><br><span class="line">         -F INT   filtering flag, 0 for unset [0]</span><br><span class="line">         -q INT   minimum mapping quality [0]</span><br><span class="line">         -l STR   only output reads in library STR [null]</span><br><span class="line">         -r STR   only output reads in read group STR [null]</span><br><span class="line">         -s FLOAT fraction of templates to subsample; integer part as seed [-1]</span><br><span class="line">         -?       longer help</span><br></pre></td></tr></table></figure>
+
+<p>一些实例；</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 将sam文件转换成bam文件</span></span><br><span class="line">samtools view -bS abc.sam &gt; abc.bam</span><br><span class="line"></span><br><span class="line"><span class="comment"># BAM转换为SAM</span></span><br><span class="line">samtools view -h -o out.sam out.bam</span><br><span class="line"></span><br><span class="line"><span class="comment"># 提取比对到参考序列上的比对结果</span></span><br><span class="line">samtools view -bF 4 abc.bam &gt; abc.F.bam</span><br><span class="line"></span><br><span class="line"><span class="comment"># 提取paired reads中两条reads都比对到参考序列上的比对结果，只需要把两个4+8的值12作为过滤参数即可</span></span><br><span class="line">samtools view -bF 12 abc.bam &gt; abc.F12.bam</span><br><span class="line"></span><br><span class="line"><span class="comment"># 提取没有比对到参考序列上的比对结果</span></span><br><span class="line">samtools view -bf 4 abc.bam &gt; abc.f.bam</span><br><span class="line"></span><br><span class="line"><span class="comment"># 提取bam文件中比对到caffold1上的比对结果，并保存到sam文件格式</span></span><br><span class="line">samtools view abc.bam scaffold1 &gt; scaffold1.sam</span><br><span class="line"></span><br><span class="line"><span class="comment"># 提取scaffold1上能比对到30k到100k区域的比对结果</span></span><br><span class="line">samtools view abc.bam scaffold1:30000-100000 <span class="variable">$gt</span>; scaffold1_30k-100k.sam</span><br><span class="line"></span><br><span class="line"><span class="comment"># 根据fasta文件，将 header 加入到 sam 或 bam 文件中</span></span><br><span class="line">samtools view -T genome.fasta -h scaffold1.sam &gt; scaffold1.h.sam</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-sort"><a href="#2-sort" class="headerlink" title="2. sort"></a>2. sort</h3><p>​    sort对bam文件进行排序。(sam文件无法排序)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Usage: samtools sort [option] &lt;in.bam&gt; -o &lt;out.prefix&gt;  </span><br><span class="line">-n Sort by <span class="built_in">read</span> name</span><br><span class="line"><span class="comment">#设定排序方式按short reads的ID排序。默认下是按序列在fasta文件中的顺序（即header）和序列从左往右的位点排序。</span></span><br><span class="line"></span><br><span class="line">-m INT     Set maximum memory per thread; suffix K/M/G recognized [768M]</span><br><span class="line"><span class="comment"># 设置每个线程的最大内存，单位可以是K/M/G，默认是 768M。对于处理大数据时，如果内存够用，则设置大点的值，以节约时间。</span></span><br><span class="line"></span><br><span class="line">-t TAG     Sort by value of TAG. Uses position as secondary index (or <span class="built_in">read</span> name <span class="keyword">if</span> -n is <span class="built_in">set</span>)</span><br><span class="line"><span class="comment"># 按照TAG值排序</span></span><br><span class="line"></span><br><span class="line">-o FILE    Write final output to FILE rather than standard output </span><br><span class="line"><span class="comment"># 输出到文件中，加文件名</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-merge和cat"><a href="#3-merge和cat" class="headerlink" title="3.merge和cat"></a>3.merge和cat</h3><p>​    merge将多个已经sort了的bam文件融合成一个bam文件。融合后的文件则是已经sort过了的。而cat命令不需要将bam文件进行sort。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Usage: samtools merge [-nurlf] [-h inh.sam] [-b &lt;bamlist.fofn&gt;] &lt;out.bam&gt; &lt;in1.bam&gt; [&lt;in2.bam&gt; ... &lt;inN.bam&gt;]</span><br><span class="line"></span><br><span class="line">Options: </span><br><span class="line">  -n         Input files are sorted by read name</span><br><span class="line"><span class="meta">#</span><span class="bash"> 输入文件是经过sort -n的</span></span><br><span class="line">  -t TAG     Input files are sorted by TAG value</span><br><span class="line"><span class="meta">#</span><span class="bash"> 输入文件是经过sort -t的</span></span><br><span class="line">  -r         Attach RG tag (inferred from file names)</span><br><span class="line"><span class="meta">#</span><span class="bash"> 添加上RG标签</span></span><br><span class="line">  -u         Uncompressed BAM output</span><br><span class="line"><span class="meta">#</span><span class="bash"> 输出未压缩的bam</span></span><br><span class="line">  -f         Overwrite the output BAM if exist</span><br><span class="line"><span class="meta">#</span><span class="bash"> 覆盖已经存在的bam</span></span><br><span class="line">  -1         Compress level 1</span><br><span class="line"><span class="meta">#</span><span class="bash"> 1倍压缩</span></span><br><span class="line">  -l INT     Compression level, from 0 to 9 [-1]</span><br><span class="line"><span class="meta">#</span><span class="bash"> 指定压缩倍数</span></span><br><span class="line">  -R STR     Merge file in the specified region STR [all]</span><br><span class="line">  -h FILE    Copy the header in FILE to &lt;out.bam&gt; [in1.bam]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash">samtools cat</span></span><br><span class="line">Usage: samtools cat [options] &lt;in1.bam&gt;  [... &lt;inN.bam&gt;]</span><br><span class="line">       samtools cat [options] &lt;in1.cram&gt; [... &lt;inN.cram&gt;]</span><br><span class="line"></span><br><span class="line">Options: -b FILE  list of input BAM/CRAM file names, one per line</span><br><span class="line">         -h FILE  copy the header from FILE [default is 1st input file]</span><br><span class="line">         -o FILE  output BAM/CRAM</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-index"><a href="#4-index" class="headerlink" title="4.index"></a>4.index</h3><p>​    对排序后的序列建立索引，并输出为bai文件，用于快速随机处理。在很多情况下，特别是需要显示比对序列的时候，bai文件是必不可少的，例如之后的tview命令。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Usage: samtools index &lt;in.bam&gt; [out.index]</span><br><span class="line"></span><br><span class="line">samtools index abc.sort.bam</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-faidx"><a href="#5-faidx" class="headerlink" title="5. faidx"></a>5. faidx</h3><p>​    对<code>fasta</code>文件建立索引,生成的索引文件以<code>.fai</code>后缀结尾。该命令也能依据索引文件快速提取<code>fasta</code>文件中的某一条（子）序列</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Usage: samtools faidx &lt;file.fa|file.fa.gz&gt; [&lt;reg&gt; [...]]samtools faidx &lt;file.fa|file.fa.gz&gt; [&lt;reg&gt; [...]]</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-tview"><a href="#6-tview" class="headerlink" title="6. tview"></a>6. tview</h3><p>​    tview能直观的显示出reads比对基因组的情况，和基因组浏览器有点类似。可视化一般用IGV比较好，不建议用tview</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Usage: samtools tview &lt;aln.bam&gt; [ref.fasta]</span><br></pre></td></tr></table></figure>
+
+<p>​    当给出参考基因组的时候，会在第一排显示参考基因组的序列，否则，第一排全用N表示。</p>
+<ul>
+<li>按下 g ，则提示输入要到达基因组的某一个位点。例子“scaffold_10:1000”表示到达第10号scaffold的第1000个碱基位点处。</li>
+<li>使用H(左）J（ 上）K（下）L（右）移动显示界面。大写字母移动快，小写字母移动慢。</li>
+<li>使用空格建向左快速移动（和 L 类似），使用Backspace键向左快速移动（和 H 类似）。</li>
+<li>Ctrl+H 向左移动1kb碱基距离； Ctrl+L 向右移动1kb碱基距离</li>
+<li>可以用颜色标注比对质量，碱基质量，核苷酸等。30～40的碱基质量或比对质量使用白色表示；<ul>
+<li>20～30黄色；10～20绿色；0～10蓝色。</li>
+<li>使用点号‘.‘切换显示碱基和点号；使用r切换显示read name等</li>
+</ul>
+</li>
+</ul>
+<p>还有很多其它的使用说明，具体按 ？ 键来查看。 </p>
+<h3 id="7-flagstat"><a href="#7-flagstat" class="headerlink" title="7. flagstat"></a>7. flagstat</h3><p>​    给出BAM文件的比对结果，并输出比对统计结果。除了<code>-@</code>参数指定线程，没有其他的参数</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">Usage: samtools flagstat [options] &lt;in.bam&gt;</span><br><span class="line"></span><br><span class="line">samtools flagstat tmp.bam </span><br><span class="line">20000 + 0 in total (QC-passed reads + QC-failed reads)</span><br><span class="line"><span class="meta">#</span><span class="bash"> 总共的reads数</span></span><br><span class="line">0 + 0 secondary</span><br><span class="line">0 + 0 supplementary</span><br><span class="line">0 + 0 duplicates</span><br><span class="line">18995 + 0 mapped (94.98% : N/A)</span><br><span class="line"><span class="meta">#</span><span class="bash"> 总体上reads的匹配率</span></span><br><span class="line">20000 + 0 paired in sequencing</span><br><span class="line"><span class="meta">#</span><span class="bash"> 有多少reads是属于paired reads</span></span><br><span class="line">10000 + 0 read1</span><br><span class="line"><span class="meta">#</span><span class="bash"> reads1中的reads数</span></span><br><span class="line">10000 + 0 read2</span><br><span class="line"><span class="meta">#</span><span class="bash"> reads2中的reads数</span></span><br><span class="line">18332 + 0 properly paired (91.66% : N/A)</span><br><span class="line"><span class="meta">#</span><span class="bash"> 完美匹配的reads数和比例：比对到同一条参考序列，并且两条reads之间的距离符合设置的阈值</span></span><br><span class="line">18416 + 0 with itself and mate mapped</span><br><span class="line"><span class="meta">#</span><span class="bash"> paired reads中两条都比对到参考序列上的reads数</span></span><br><span class="line">579 + 0 singletons (2.90% : N/A)</span><br><span class="line"><span class="meta">#</span><span class="bash"> 单独一条匹配到参考序列上的reads数，和上一个相加，则是总的匹配上的reads数。</span></span><br><span class="line">0 + 0 with mate mapped to a different chr</span><br><span class="line"><span class="meta">#</span><span class="bash"> paired reads中两条分别比对到两条不同的参考序列的reads数</span></span><br><span class="line">0 + 0 with mate mapped to a different chr (mapQ&gt;=5)</span><br><span class="line"><span class="meta">#</span><span class="bash"> 同上一个，只是其中比对质量&gt;=5的reads的数量</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="8-depth"><a href="#8-depth" class="headerlink" title="8. depth"></a>8. depth</h3><p>​    得到每个碱基位点的测序深度，并输出到标准输出。输入的bam文件必须先做samtools index</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Usage:  samtools depth [-r reg] [-q baseQthres] [-Q mapQthres] [-b in.bed] &lt;in1.bam&gt; [...]</span><br><span class="line">-r &lt;chr:from-to&gt;    region</span><br><span class="line"><span class="meta">#</span><span class="bash"> 后面跟染色体号（region）</span></span><br><span class="line">-a  output all positions (including zero depth)</span><br><span class="line"><span class="meta">#</span><span class="bash"> 输入所有位置的序列，包括测序深度为0的</span></span><br><span class="line">-q &lt;int&gt;    base quality threshold [0]</span><br><span class="line"><span class="meta">#</span><span class="bash"> 碱基质量阈值</span></span><br><span class="line">-Q &lt;int&gt;    mapping quality threshold [0]</span><br><span class="line"><span class="meta">#</span><span class="bash"> 比对的质量阈值</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="9-将bam文件转换为fastq文件"><a href="#9-将bam文件转换为fastq文件" class="headerlink" title="9. 将bam文件转换为fastq文件"></a>9. 将bam文件转换为fastq文件</h3><p>有时候，我们需要提取出比对到一段参考序列的reads，进行小范围的分析，以利于debug等。这时需要将bam或sam文件转换为fastq格式。<br>该网站提供了一个bam转换为fastq的程序：<a target="_blank" rel="noopener" href="https://links.jianshu.com/go?to=http://www.hudsonalpha.org/gsl/information/software/bam2fastq">http://www.hudsonalpha.org/gsl/information/software/bam2fastq</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wget http://www.hudsonalpha.org/gsl/static/software/bam2fastq-1.1.0.tgz</span><br><span class="line">tar zxf bam2fastq-1.1.0.tgz</span><br><span class="line"><span class="built_in">cd</span> bam2fastq-1.1.0</span><br><span class="line">make</span><br><span class="line">./bam2fastq &lt;in.bam&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="10-mpileup"><a href="#10-mpileup" class="headerlink" title="10. mpileup"></a>10. mpileup</h3><p>​    samtools还有个非常重要的命令mpileup，以前为pileup。该命令用于生成bcf文件，再使用bcftools进行SNP和Indel的分析。bcftools是samtool中附带的软件，在samtools的安装文件夹中可以找到。<br> 用法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Usage: samtools mpileup [-EBug] [-C capQcoef] [-r reg] [-f in.fa] [-l list] [-M capMapQ] [-Q minBaseQ] [-q minMapQ] in.bam [in2.bam [...]]</span><br></pre></td></tr></table></figure>
+
+<p>最常用的参数有2：</p>
+<ul>
+<li>-f 来输入有索引文件的fasta参考 序列；</li>
+<li>-g 输出到bcf格式。用法和最简单的例子如下\</li>
+</ul>
+<p>​    mpileup不使用-u或-g参数时，则不生成二进制的bcf文件，而生成一个文本文件(输出到标准输出)。该文本文件统计了参考序列中每个碱基位点的比对情况；该文件每一行代表了参考序列中某一个碱基位点的比对结果。比如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">scaffold_1      2841    A       11      ,,,...,....     BHIGDGIJ?FF</span><br><span class="line">scaffold_1      2842    C       12      ,$,,...,....^I. CFGEGEGGCFF+</span><br><span class="line">scaffold_1      2843    G       11      ,,...,.....     FDDDDCD?DD+</span><br><span class="line">scaffold_1      2844    G       11      ,,...,.....     FA?AAAA&lt;AA+</span><br><span class="line">scaffold_1      2845    G       11      ,,...,.....     F656666166*</span><br><span class="line">scaffold_1      2846    A       11      ,,...,.....     (1.1111)11*</span><br><span class="line">scaffold_1      2847    A       11      ,,+9acggtgaag.+9ACGGTGAAT.+9ACGGTGAAG.+9ACGGTGAAG,+9acggtgaag.+9ACGGTGAAG.+9ACGGTGAAG.+9ACGGTGAAG.+9ACGGTGAAG.+9ACGGTGAAG       %.+....-..)</span><br><span class="line">scaffold_1      2848    N       11      agGGGgGGGGG     !!$!!!!!!!!</span><br><span class="line">scaffold_1      2849    A       11      c$,...,.....    !0000000000</span><br><span class="line">scaffold_1      2850    A       10      ,...,.....      353333333</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>mpileup生成的结果包含6列：参考序列名；位置；参考碱基；比对上的reads数；比对情况；比对上的碱基的质量。其中第5列比较复杂,解释如下：<br>1 ‘.’代表与参考序列正链匹配。<br>2 ‘,’代表与参考序列负链匹配。<br>3 ‘ATCGN’代表在正链上的不匹配。<br>4 ‘atcgn’代表在负链上的不匹配。<br>5 ‘*’代表模糊碱基<br>6 ‘’ 代表匹配的碱基是一个read的开始；’‘ 后面紧跟的ascii码减去33代表比对质量；这两个符号修饰的是后面的碱基，其后紧跟的碱基(.,ATCGatcgNn)代表该read的第一个碱基。<br>7 ‘$’代表一个read的结束，该符号修饰的是其前面的碱基。<br>8 正则式’+[0-9]+[ACGTNacgtn]+’代表在该位点后插入的碱基；比如上例中在scaffold_1的2847后插入了9个长度的碱基acggtgaag。表明此处极可能是indel。<br>9 正则式’-[0-9]+[ACGTNacgtn]+’代表在该位点后缺失的碱基；</p>
+</blockquote>
+<h3 id="11-samtools-rmdup"><a href="#11-samtools-rmdup" class="headerlink" title="11. samtools rmdup"></a>11. samtools rmdup</h3><p>​    NGS上机测序前需要进行PCR一步，使一个模板扩增出一簇，从而在上机测序的时候表现出为1个点，即一个reads。若一个模板扩增出了多簇，结 果得到了多个reads，这些reads的坐标(coordinates)是相近的。在进行了reads比对后需要将这些由PCR duplicates获得的reads去掉，并只保留最高比对质量的read。使用rmdup命令即可完成.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Usage:  samtools rmdup [-sS]  </span><br><span class="line">-s rmdup for SE reads</span><br><span class="line"><span class="meta">#</span><span class="bash"> 对single-end reads。默认情况下，只对paired-end reads</span></span><br><span class="line">-S treat PE reads as SE in rmdup (force -s)</span><br><span class="line"><span class="meta">#</span><span class="bash"> 将Paired-end reads作为single-end reads处理。</span></span><br></pre></td></tr></table></figure>
+
+    </div>
+    
+    <div>
+      
+          <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">
+              -------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------
+        </div>
+    
+</div>
+
+
+      
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>阿狒
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://zhengxingsong.github.io/%E7%94%9F%E4%BF%A1/Samtools/" title="Samtools">http://zhengxingsong.github.io/生信/Samtools/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/%E7%94%9F%E4%BF%A1/" rel="tag"><i class="fa fa-tag"></i> 生信</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Hexo/Hexo-next%E4%B8%BB%E9%A2%98%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/" rel="prev" title="Hexo next主题配置文件">
+      <i class="fa fa-chevron-left"></i> Hexo next主题配置文件
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E5%AE%89%E8%A3%85"><span class="nav-number">1.</span> <span class="nav-text">下载安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Samtool%E5%B7%A5%E5%85%B7%E5%8C%85"><span class="nav-number">2.</span> <span class="nav-text">Samtool工具包</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-view"><span class="nav-number">2.1.</span> <span class="nav-text">1.view</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-sort"><span class="nav-number">2.2.</span> <span class="nav-text">2. sort</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-merge%E5%92%8Ccat"><span class="nav-number">2.3.</span> <span class="nav-text">3.merge和cat</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-index"><span class="nav-number">2.4.</span> <span class="nav-text">4.index</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-faidx"><span class="nav-number">2.5.</span> <span class="nav-text">5. faidx</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-tview"><span class="nav-number">2.6.</span> <span class="nav-text">6. tview</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-flagstat"><span class="nav-number">2.7.</span> <span class="nav-text">7. flagstat</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-depth"><span class="nav-number">2.8.</span> <span class="nav-text">8. depth</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-%E5%B0%86bam%E6%96%87%E4%BB%B6%E8%BD%AC%E6%8D%A2%E4%B8%BAfastq%E6%96%87%E4%BB%B6"><span class="nav-number">2.9.</span> <span class="nav-text">9. 将bam文件转换为fastq文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-mpileup"><span class="nav-number">2.10.</span> <span class="nav-text">10. mpileup</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-samtools-rmdup"><span class="nav-number">2.11.</span> <span class="nav-text">11. samtools rmdup</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="阿狒"
+      src="/images/header.jpg">
+  <p class="site-author-name" itemprop="name">阿狒</p>
+  <div class="site-description" itemprop="description">人这一生总会死去，你不妨大胆一些，爱一个人，攀一座山，追一个梦，是的，你不妨大胆一些。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhengxingSong" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhengxingSong" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">阿狒</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">37k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">33 分钟</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/three-waves.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
