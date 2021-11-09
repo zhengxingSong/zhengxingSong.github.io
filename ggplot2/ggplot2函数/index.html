@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhengxingsong.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="概述ggplot2的基本概念：  ggplot2的核心理念是将绘图与数据分离，数据相关的绘图与数据无关的绘图分离  ggplot2是按图层作图  ggplot2保有命令式作图的调整函数，使其更具灵活性  ggplot2将常见的统计变换融入到了绘图中。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ggplot2函数">
+<meta property="og:url" content="http://zhengxingsong.github.io/ggplot2/ggplot2%E5%87%BD%E6%95%B0/index.html">
+<meta property="og:site_name" content="阿狒的博客">
+<meta property="og:description" content="概述ggplot2的基本概念：  ggplot2的核心理念是将绘图与数据分离，数据相关的绘图与数据无关的绘图分离  ggplot2是按图层作图  ggplot2保有命令式作图的调整函数，使其更具灵活性  ggplot2将常见的统计变换融入到了绘图中。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-11-09T03:09:16.000Z">
+<meta property="article:modified_time" content="2021-11-09T03:10:32.383Z">
+<meta property="article:author" content="阿狒">
+<meta property="article:tag" content="R">
+<meta property="article:tag" content="绘图函数">
+<meta property="article:tag" content="ggplot2">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://zhengxingsong.github.io/ggplot2/ggplot2%E5%87%BD%E6%95%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>ggplot2函数 | 阿狒的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">阿狒的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">愿热爱生活的人可以不被辜负</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">6</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">3</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">4</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/zhengxingSong" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zhengxingsong.github.io/ggplot2/ggplot2%E5%87%BD%E6%95%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="阿狒">
+      <meta itemprop="description" content="人这一生总会死去，你不妨大胆一些，爱一个人，攀一座山，追一个梦，是的，你不妨大胆一些。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="阿狒的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ggplot2函数
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-11-09 11:09:16 / 修改时间：11:10:32" itemprop="dateCreated datePublished" datetime="2021-11-09T11:09:16+08:00">2021-11-09</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ggplot2/" itemprop="url" rel="index"><span itemprop="name">ggplot2</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p><strong>ggplot2的基本概念：</strong></p>
+<ul>
+<li><p>ggplot2的核心理念是将绘图与数据分离，数据相关的绘图与数据无关的绘图分离</p>
+</li>
+<li><p>ggplot2是按<strong>图层</strong>作图</p>
+</li>
+<li><p>ggplot2保有命令式作图的调整函数，使其更具灵活性</p>
+</li>
+<li><p>ggplot2将常见的统计变换融入到了绘图中。</p>
+<span id="more"></span></li>
+</ul>
+<p>ggplot的绘图有以下几个<strong>特点</strong>：</p>
+<ul>
+<li><p>第一，有明确的起始（以ggplot函数开始）与终止（一句语句一幅图）；</p>
+</li>
+<li><p>其二，图层之间的叠加是靠“+”号实现的，越后面其图层越高。</p>
+</li>
+</ul>
+<p>ggplot<strong>图的元素</strong>可以主要可以概括如下：</p>
+<ul>
+<li><p>plot（指整张图，包括background和title）</p>
+</li>
+<li><p>axis（包括stick，text，title和stick）</p>
+</li>
+<li><p>legend（包括backgroud、text、title）</p>
+</li>
+<li><p>facet ( 分为外部strip部分（包括backgroud和text）和内部panel部分（包括backgroud、boder和网格线grid，其中粗的叫grid.major，细的叫grid.minor ) )</p>
+</li>
+</ul>
+<p>ggplot2里的所有<strong>函数</strong>可以分为以下几类：</p>
+<ul>
+<li><p>运算（如fortify_，mean_等）</p>
+</li>
+<li><p>初始化、展示绘图等命令（ggplot，plot，print等）</p>
+</li>
+<li><p>按变量组图（facet_等）_</p>
+</li>
+<li><p>真正的绘图命令（stat_，geom_，annotate）</p>
+</li>
+</ul>
+<blockquote>
+<p>以上三类就是实现一个函数一个图层的<strong>核心函数</strong>。</p>
+</blockquote>
+<ul>
+<li><p>微调图型：严格意义上说，这一类函数不是再实现图层，而是在做局部调整。</p>
+</li>
+<li><p>aes : 同样适用于修改geom_XXX() aes参数控制了对哪些变量进行图形映射，以及映射方式，图形属性（aes） 横纵坐标、点的大小、颜色，填充色等</p>
+</li>
+</ul>
+<h2 id="公式"><a href="#公式" class="headerlink" title="公式"></a>公式</h2><p><strong>ggplot(data = , aes(x = , y = )) +</strong></p>
+<p><strong>geom_XXX(…) + … + stat_XXX(…) + … +</strong></p>
+<p><strong>annotate(…) + … + labs(…) +</strong></p>
+<p><strong>scale_XXX(…) + coord_XXX(…) + guides(…) + theme(…) +</strong></p>
+<p><strong>facet_XXX(…)</strong></p>
+<h3 id="公式意义"><a href="#公式意义" class="headerlink" title="公式意义"></a>公式意义</h3><ul>
+<li><p><strong>geom</strong> :表示几何对象，它是ggplot中重要的图层控制对象，因为它负责图形渲染的类型。<br>几何对象（geom_） 上面指定的图形属性需要呈现在一定的几何对象上才能被我们看到，这些承载图形属性的对象可能是点，可能是线，可能是bar</p>
+</li>
+<li><p><strong>stat</strong> :统计变换 比如求均值，求方差等，当我们需要展示出某个变量的某种统计特征的时候，需要用到统计变换</p>
+</li>
+<li><p><strong>annotate</strong>：添加注释 #由于设置的文本会覆盖原来的图中对应的位置，可以改变文本的透明度或者颜色 例：  annotate(geom=’text’)会向图形添加一个单独的文本对象  annotate(“text”,x=23,y=200,parse=T,label = “x[1]==x[2]”)</p>
+</li>
+<li><p><strong>labs</strong> : labs(x = “这是 X 轴”, y = “这是 Y 轴”, title = “这是标题”) ## 修改文字</p>
+</li>
+<li><p><strong>scale_</strong>:  标度是一种函数，它控制了数学空间到图形元素空间的映射。一组连续数据可以映射到X轴坐标，也可以映射到一组连续的渐变色彩。一组分类数据可以映射成为不同的形状，也可以映射成为不同的大小，这就是与aes内的各种美学（shape、color、fill、alpha）调整有关的函数。</p>
+</li>
+<li><p>**coord_**：调整坐标，控制了图形的坐标轴并影响所有图形元素. 调整坐标  coord_flip()来翻转坐标轴。使用xlim()和ylim()来设置连续型坐标轴的最小值和最大值  coord_cartesian(xlim=c(0,100),ylim=c(0,100))</p>
+</li>
+<li><p><strong>guides</strong>：调整所有的text。</p>
+</li>
+<li><p><strong>theme</strong>：调整不与数据有关的图的元素的函数。theme函数采用了四个简单地函数来调整所有的主题特征：</p>
+<ul>
+<li>element_text调整字体</li>
+<li>element_line调整主题内的所有线</li>
+<li>element_rect调整所有的块</li>
+<li>element_blank清空</li>
+<li>theme(panel.grid =element_blank()) ## 删去网格线</li>
+</ul>
+</li>
+<li><p>facet :控制分组绘图的方法和排列形式</p>
+</li>
+</ul>
+<p># 不指定数据集时，data = NULL</p>
+<p>一个图形对象就是一个包含<strong>数据，映射，图层，标度，坐标和分面</strong>的_列表_，外加<strong>组件options</strong></p>
+<blockquote>
+<p>ggplot(数据, 映射) +  geom_xxx(映射, 数据)  + stat_xxx(映射, 数据)</p>
+</blockquote>
+<p># 通过“+”实现不同图层的相应累加，且越往后的图层表现在上方</p>
+<ul>
+<li>点（point, text）：往往只有x、y指定位置，有shape但没有fill</li>
+<li>线(line,vline,abline,hline,stat_function等)：一般是基于函数来处理位置</li>
+<li>射(segment)：特征是指定位置有xend和yend，表示射线方向</li>
+<li>面(tile, rect)：这类一般有xmax,xmin,ymax,ymin指定位置</li>
+<li>棒(boxplot,bin,bar,histogram)：往往是二维或一维变量，具有width属性</li>
+<li>带(ribbon,smooth):透明是特征是透明的fill</li>
+<li>补：包括rug图，误差棒(errorbar,errorbarh)</li>
+</ul>
+<h2 id="基础语法"><a href="#基础语法" class="headerlink" title="基础语法"></a>基础语法</h2><ul>
+<li><p>数据（<strong>data</strong>）：将要展示的数据；</p>
+</li>
+<li><p>映射（<strong>mapping</strong>）：数据中的变量到图形成分的映射；</p>
+</li>
+<li><p>几何对象（<strong>geom</strong>）：用来展示数据的几何对象，如geom_point,geom_bar,geom_abline；</p>
+</li>
+<li><p>图形属性（<strong>aes</strong>）：图形属性决定了图形的外观，如字体大小、标签位置及刻度线；</p>
+</li>
+<li><p>标度（<strong>scale</strong>）：决定了变量如何被映射到图形属性上；</p>
+</li>
+<li><p>坐标（<strong>coordinate</strong>）：数据如何被映射到图中。如coord_cartesian:笛卡尔坐标、coord_polar:极坐标、coord_map:地理投影；</p>
+</li>
+<li><p>统计变换（<strong>stat</strong>）：对数据进行汇总，如箱线图：stat_boxplot、线图：stat_abline、直方图：stat_bin</p>
+</li>
+<li><p>分面（<strong>facet</strong>）：用来描述数据如何被拆分为子集，以及对不同子集是如何绘制的。</p>
+</li>
+<li><p>位置调整（<strong>position</strong>）：对图形位置做精细控制。</p>
+</li>
+</ul>
+<p>创建ggplot对象：使用ggplot函数：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ggplot(data,mapping=aes(),...,environment=<span class="built_in">globalenv</span>())</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>data</td>
+<td>要绘图的数据框</td>
+<td></td>
+</tr>
+<tr>
+<td>mapping</td>
+<td>一系列图形属性的映射</td>
+<td>aes()</td>
+</tr>
+<tr>
+<td>environment</td>
+<td>图形属性参数所在的环境</td>
+<td>globalenv()</td>
+</tr>
+</tbody></table>
+<h3 id="几何对象"><a href="#几何对象" class="headerlink" title="几何对象"></a>几何对象</h3><p>​    为了指定图形类型，必须加入图层，可采用layer()函数。可以使用“point”等短名称来指定几何对象。layer函数允许将几何对象作为名称和值的配对，这样就不需要指出函数全名，而只需要geom_后面的部分。几何对象如下：</p>
+<table>
+<thead>
+<tr>
+<th>几何对象函数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>geom_abline</td>
+<td>线图，由斜率和截距指定</td>
+</tr>
+<tr>
+<td>geom_area</td>
+<td>面积图（即连续的条形图）</td>
+</tr>
+<tr>
+<td>geom_bar</td>
+<td>条形图</td>
+</tr>
+<tr>
+<td>geom_bin2d</td>
+<td>二维封箱的热图</td>
+</tr>
+<tr>
+<td>geom_blank</td>
+<td>空的几何对象，什么也不画</td>
+</tr>
+<tr>
+<td>geom_boxplot</td>
+<td>箱线图</td>
+</tr>
+<tr>
+<td>geom_contour</td>
+<td>等高线图</td>
+</tr>
+<tr>
+<td>geom_crossbar</td>
+<td>crossbar图（类似于箱线图，但没有触须和极值点）</td>
+</tr>
+<tr>
+<td>geom_density</td>
+<td>密度图</td>
+</tr>
+<tr>
+<td>geom_density2d</td>
+<td>二维密度图</td>
+</tr>
+<tr>
+<td>geom_errorbar</td>
+<td>误差线（通常添加到其他图形上，比如柱状图、点图、线图等）</td>
+</tr>
+<tr>
+<td>geom_errorbarh</td>
+<td>水平误差线</td>
+</tr>
+<tr>
+<td>geom_freqpoly</td>
+<td>频率多边形（类似于直方图）</td>
+</tr>
+<tr>
+<td>geom_hex</td>
+<td>六边形图（通常用于六边形封箱）</td>
+</tr>
+<tr>
+<td>geom_histogram</td>
+<td>直方图</td>
+</tr>
+<tr>
+<td>geom_hline</td>
+<td>水平线</td>
+</tr>
+<tr>
+<td>geom_jitter</td>
+<td>点、自动添加了扰动</td>
+</tr>
+<tr>
+<td>geom_line</td>
+<td>线</td>
+</tr>
+<tr>
+<td>geom_linerange</td>
+<td>区间，用竖直线来表示</td>
+</tr>
+<tr>
+<td>geom_path</td>
+<td>几何路径，由一组点按顺序连接</td>
+</tr>
+<tr>
+<td>geom_point</td>
+<td>点</td>
+</tr>
+<tr>
+<td>geom_pointrange</td>
+<td>一条垂直线，线的中间有一个点（与Crossbar图和箱线图相关，可以用来表示线的范围）</td>
+</tr>
+<tr>
+<td>geom_polygon</td>
+<td>多边形</td>
+</tr>
+<tr>
+<td>geom_quantile</td>
+<td>一组分位数线（来自分位数回归）</td>
+</tr>
+<tr>
+<td>geom_rect</td>
+<td>二维的长方形</td>
+</tr>
+<tr>
+<td>geom_ribbon</td>
+<td>彩虹图（在连续的x值上表示y的范围，例如Tufte著名的拿破仑远征图）</td>
+</tr>
+<tr>
+<td>geom_rug</td>
+<td>触须</td>
+</tr>
+<tr>
+<td>geom_segment</td>
+<td>线段</td>
+</tr>
+<tr>
+<td>geom_smooth</td>
+<td>平滑的条件均值</td>
+</tr>
+<tr>
+<td>geom_step</td>
+<td>阶梯图</td>
+</tr>
+<tr>
+<td>geom_text</td>
+<td>文本</td>
+</tr>
+<tr>
+<td>geom_tile</td>
+<td>瓦片（即一个个的小长方形或多边形）</td>
+</tr>
+<tr>
+<td>geom_vline</td>
+<td>竖直线</td>
+</tr>
+</tbody></table>
+<h3 id="统计变换"><a href="#统计变换" class="headerlink" title="统计变换"></a>统计变换</h3><table>
+<thead>
+<tr>
+<th>统计变换函数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>stat_abline</td>
+<td>添加线条，用斜率和截距表示</td>
+</tr>
+<tr>
+<td>stat_bin</td>
+<td>分割数据，然后绘制直方图</td>
+</tr>
+<tr>
+<td>stat_bin2d</td>
+<td>二维密度图，用矩阵表示</td>
+</tr>
+<tr>
+<td>stat_binhex</td>
+<td>二维密度图，用六边形表示</td>
+</tr>
+<tr>
+<td>stat_boxplot</td>
+<td>绘制带触须的箱线图</td>
+</tr>
+<tr>
+<td>stat_contour</td>
+<td>绘制三维数据的等高线图</td>
+</tr>
+<tr>
+<td>stat_density</td>
+<td>绘制密度图</td>
+</tr>
+<tr>
+<td>stat_density2d</td>
+<td>绘制二维密度图</td>
+</tr>
+<tr>
+<td>stat_function</td>
+<td>添加函数曲线</td>
+</tr>
+<tr>
+<td>stat_hline</td>
+<td>添加水平线</td>
+</tr>
+<tr>
+<td>stat_identity</td>
+<td>绘制原始数据，不进行统计变换</td>
+</tr>
+<tr>
+<td>stat_qq</td>
+<td>绘制Q-Q图</td>
+</tr>
+<tr>
+<td>stat_quantile</td>
+<td>连续的分位线</td>
+</tr>
+<tr>
+<td>stat_smooth</td>
+<td>添加平滑曲线</td>
+</tr>
+<tr>
+<td>stat_spoke</td>
+<td>绘制有方向的数据点（由x和y指定位置，angle指定角度）</td>
+</tr>
+<tr>
+<td>stat_sum</td>
+<td>绘制不重复的取值之和（通常用在三点图上）</td>
+</tr>
+<tr>
+<td>stat_summary</td>
+<td>绘制汇总数据</td>
+</tr>
+<tr>
+<td>stat_unique</td>
+<td>绘制不同的数值，去掉重复的数值</td>
+</tr>
+<tr>
+<td>stat_vline</td>
+<td>绘制竖直线</td>
+</tr>
+</tbody></table>
+<h3 id="标度函数"><a href="#标度函数" class="headerlink" title="标度函数"></a>标度函数</h3><table>
+<thead>
+<tr>
+<th>标度函数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>scale_alpha</td>
+<td>alpha通道值（灰度）</td>
+</tr>
+<tr>
+<td>scale_brewer</td>
+<td>调色板，来自colorbrewer.org网站展示的颜色标度</td>
+</tr>
+<tr>
+<td>scale_continuous</td>
+<td>连续标度</td>
+</tr>
+<tr>
+<td>scale_data</td>
+<td>日期</td>
+</tr>
+<tr>
+<td>scale_datetime</td>
+<td>日期和时间</td>
+</tr>
+<tr>
+<td>scale_discrete</td>
+<td>离散值</td>
+</tr>
+<tr>
+<td>scale_gradient</td>
+<td>两种颜色构建的渐变色</td>
+</tr>
+<tr>
+<td>scale_gradient2</td>
+<td>3中颜色构建的渐变色</td>
+</tr>
+<tr>
+<td>scale_gradientn</td>
+<td>n种颜色构建的渐变色</td>
+</tr>
+<tr>
+<td>scale_grey</td>
+<td>灰度颜色</td>
+</tr>
+<tr>
+<td>scale_hue</td>
+<td>均匀色调</td>
+</tr>
+<tr>
+<td>scale_identity</td>
+<td>直接使用指定的取值，不进行标度转换</td>
+</tr>
+<tr>
+<td>scale_linetype</td>
+<td>用线条模式来展示不同</td>
+</tr>
+<tr>
+<td>scale_manual</td>
+<td>手动指定离散标度</td>
+</tr>
+<tr>
+<td>scale_shape</td>
+<td>用不同的形状来展示不同的数值</td>
+</tr>
+<tr>
+<td>scale_size</td>
+<td>用不同大小的对象来展示不同的数值</td>
+</tr>
+</tbody></table>
+<h3 id="坐标系"><a href="#坐标系" class="headerlink" title="坐标系"></a>坐标系</h3><table>
+<thead>
+<tr>
+<th>坐标函数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>coord_cartesian</td>
+<td>笛卡儿坐标</td>
+</tr>
+<tr>
+<td>coord_equal</td>
+<td>等尺度坐标（斜率为1）</td>
+</tr>
+<tr>
+<td>coord_flip</td>
+<td>翻转笛卡儿坐标</td>
+</tr>
+<tr>
+<td>coord_map</td>
+<td>地图投影</td>
+</tr>
+<tr>
+<td>coord_polar</td>
+<td>极坐标投影</td>
+</tr>
+<tr>
+<td>coord_trans</td>
+<td>变换笛卡儿坐标</td>
+</tr>
+</tbody></table>
+<h3 id="分面"><a href="#分面" class="headerlink" title="分面"></a>分面</h3><table>
+<thead>
+<tr>
+<th>分面函数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>facet_grid</td>
+<td>将分面放置在二维网格中</td>
+</tr>
+<tr>
+<td>facet_wrap</td>
+<td>将一维的分面按二维排列</td>
+</tr>
+</tbody></table>
+<h3 id="位置"><a href="#位置" class="headerlink" title="位置"></a>位置</h3><table>
+<thead>
+<tr>
+<th>定位函数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>position_dodge</td>
+<td>并列</td>
+</tr>
+<tr>
+<td>position_fill</td>
+<td>填充</td>
+</tr>
+<tr>
+<td>position_identity</td>
+<td>不对位置进行处理</td>
+</tr>
+<tr>
+<td>position_jitter</td>
+<td>扰动处理</td>
+</tr>
+<tr>
+<td>position_stack</td>
+<td>堆叠处理</td>
+</tr>
+</tbody></table>
+
+    </div>
+    
+    <div>
+      
+          <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">
+              -------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------
+        </div>
+    
+</div>
+
+
+      
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>阿狒
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://zhengxingsong.github.io/ggplot2/ggplot2%E5%87%BD%E6%95%B0/" title="ggplot2函数">http://zhengxingsong.github.io/ggplot2/ggplot2函数/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/R/" rel="tag"><i class="fa fa-tag"></i> R</a>
+              <a href="/tags/%E7%BB%98%E5%9B%BE%E5%87%BD%E6%95%B0/" rel="tag"><i class="fa fa-tag"></i> 绘图函数</a>
+              <a href="/tags/ggplot2/" rel="tag"><i class="fa fa-tag"></i> ggplot2</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E7%94%9F%E4%BF%A1/Samtools/" rel="prev" title="Samtools">
+      <i class="fa fa-chevron-left"></i> Samtools
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AC%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">公式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%AC%E5%BC%8F%E6%84%8F%E4%B9%89"><span class="nav-number">2.1.</span> <span class="nav-text">公式意义</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">基础语法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%A0%E4%BD%95%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.1.</span> <span class="nav-text">几何对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1%E5%8F%98%E6%8D%A2"><span class="nav-number">3.2.</span> <span class="nav-text">统计变换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E5%BA%A6%E5%87%BD%E6%95%B0"><span class="nav-number">3.3.</span> <span class="nav-text">标度函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9D%90%E6%A0%87%E7%B3%BB"><span class="nav-number">3.4.</span> <span class="nav-text">坐标系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E9%9D%A2"><span class="nav-number">3.5.</span> <span class="nav-text">分面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%8D%E7%BD%AE"><span class="nav-number">3.6.</span> <span class="nav-text">位置</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="阿狒"
+      src="/images/header.jpg">
+  <p class="site-author-name" itemprop="name">阿狒</p>
+  <div class="site-description" itemprop="description">人这一生总会死去，你不妨大胆一些，爱一个人，攀一座山，追一个梦，是的，你不妨大胆一些。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhengxingSong" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhengxingSong" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">阿狒</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">41k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">37 分钟</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/three-waves.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
