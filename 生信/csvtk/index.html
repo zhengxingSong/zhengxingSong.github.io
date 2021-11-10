@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhengxingsong.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="1.背景介绍​    CSV&#x2F;TSV作为数据科学和组学分析的基本格式，其实本质上均为txt格式的表格，CSV是按逗号分隔，TSV是以制表符分隔的表格。这两种格式数据格式应用非常广泛。比较常用的处理软件包括：  Excel为代表的电子表格软件 Notepad++&#x2F;Edit-plus等文本编辑器 sed&#x2F;awk&#x2F;cut等Shell命令 各种编程语言，例如 R、python等。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="csvtk">
+<meta property="og:url" content="http://zhengxingsong.github.io/%E7%94%9F%E4%BF%A1/csvtk/index.html">
+<meta property="og:site_name" content="阿狒的博客">
+<meta property="og:description" content="1.背景介绍​    CSV&#x2F;TSV作为数据科学和组学分析的基本格式，其实本质上均为txt格式的表格，CSV是按逗号分隔，TSV是以制表符分隔的表格。这两种格式数据格式应用非常广泛。比较常用的处理软件包括：  Excel为代表的电子表格软件 Notepad++&#x2F;Edit-plus等文本编辑器 sed&#x2F;awk&#x2F;cut等Shell命令 各种编程语言，例如 R、python等。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-11-10T15:52:34.000Z">
+<meta property="article:modified_time" content="2021-11-10T15:54:20.944Z">
+<meta property="article:author" content="阿狒">
+<meta property="article:tag" content="生信">
+<meta property="article:tag" content="biosoft">
+<meta property="article:tag" content="CommonSoft">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://zhengxingsong.github.io/%E7%94%9F%E4%BF%A1/csvtk/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>csvtk | 阿狒的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">阿狒的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">愿热爱生活的人可以不被辜负</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">3</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">6</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/zhengxingSong" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zhengxingsong.github.io/%E7%94%9F%E4%BF%A1/csvtk/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="阿狒">
+      <meta itemprop="description" content="人这一生总会死去，你不妨大胆一些，爱一个人，攀一座山，追一个梦，是的，你不妨大胆一些。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="阿狒的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          csvtk
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-11-10 23:52:34 / 修改时间：23:54:20" itemprop="dateCreated datePublished" datetime="2021-11-10T23:52:34+08:00">2021-11-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%94%9F%E4%BF%A1/" itemprop="url" rel="index"><span itemprop="name">生信</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>16k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>15 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="1-背景介绍"><a href="#1-背景介绍" class="headerlink" title="1.背景介绍"></a>1.背景介绍</h3><p>​    CSV/TSV作为数据科学和组学分析的基本格式，其实本质上均为txt格式的表格，CSV是按逗号分隔，TSV是以制表符分隔的表格。这两种格式数据格式应用非常广泛。比较常用的处理软件包括：</p>
+<ul>
+<li>Excel为代表的电子表格软件</li>
+<li>Notepad++/Edit-plus等文本编辑器</li>
+<li>sed/awk/cut等Shell命令</li>
+<li>各种编程语言，例如 R、python等。<span id="more"></span></li>
+</ul>
+<p>​    <strong>csvtk</strong>软件用GO语言编写，是一个支持多平台(Winodws/Mac/Linux)的小工具，支持格式除了这两种格式外还可以处理gzip压缩的格式。无需解压即用。27个子命令支持管道组合使用，支持简单的出图。</p>
+<p>参考软件[官方教程][ <a target="_blank" rel="noopener" href="https://bioinf.shenwei.me/csvtk/usage]">https://bioinf.shenwei.me/csvtk/usage]</a></p>
+<hr>
+<h3 id="2-工具安装"><a href="#2-工具安装" class="headerlink" title="2.工具安装"></a>2.工具安装</h3><p>软件主页：<a target="_blank" rel="noopener" href="https://github.com/shenwei356/csvtk">https://github.com/shenwei356/csvtk</a></p>
+<p>软件下载：<a target="_blank" rel="noopener" href="https://github.com/shenwei356/csvtk/releases/">https://github.com/shenwei356/csvtk/releases/</a></p>
+<p>各系统版本都下，下载解压即可使用。</p>
+<p>可选使用conda安装</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda install csvtk</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="3-参数介绍"><a href="#3-参数介绍" class="headerlink" title="3.参数介绍"></a>3.参数介绍</h3><h5 id="信息"><a href="#信息" class="headerlink" title="信息"></a>信息</h5><ul>
+<li>headers 打印标题行，如果表格列比较多，首先查看列名方便后续操作</li>
+<li>stats 基本统计分析</li>
+<li>stats2 对指定的列进行基本统计，注意需要是数值列</li>
+</ul>
+<h5 id="格式转化"><a href="#格式转化" class="headerlink" title="格式转化"></a>格式转化</h5><ul>
+<li>pretty 转为美观、可读性强的格式，用于打印</li>
+<li>csv2tab 转CSV为TSV</li>
+<li>tab2csv 转TSV为CSV</li>
+<li>space2tab 转空格分割格式为TSV</li>
+<li>transpose 转置CSV/TSV 这一个步骤往往看看出来工具好不好用</li>
+<li>csv2md 转CSV/TSV为makrdown格式，方便我们多平台排版，发文</li>
+</ul>
+<h5 id="集合操作"><a href="#集合操作" class="headerlink" title="集合操作"></a>集合操作</h5><ul>
+<li>head 屏幕打印表格前面的内容，可以指定行数</li>
+<li>sample 按比例随机采样 对行进行抽样</li>
+<li>cut 选择特定列，支持按列或列名进行基本选择、范围选择、模糊选择、负向选择（最常用命令之一，非常强大）</li>
+<li>uniq 无须排序，返回按指定（多）列作为key的唯一记录</li>
+<li>freq 按指定（多）列进行计数（常用）</li>
+<li>inter 多个文件的交集</li>
+<li>grep 指定（多）列为Key进行搜索（最常用命令之一，可按指定列搜索）</li>
+<li>filter 按指定（多）列的数值进行过滤</li>
+<li>filter2 用类似awk的数值/表达式，按指定（多）列的数值进行过滤</li>
+<li>join 合并多个文件（常用）</li>
+</ul>
+<h5 id="编辑"><a href="#编辑" class="headerlink" title="编辑"></a>编辑</h5><ul>
+<li>rename 直接重命名指定（多）列名</li>
+<li>rename2 以正则表达式重命名指定（多）列名</li>
+<li>replace 以正则表达式对指定（多）列进行替换编辑（最常用命令之一，可按指定列编辑）</li>
+<li>mutate 以正则表达式基于已有列创建新的一列（常用于生成多列测试数据）</li>
+<li>mutate2 用类似awk的数值/表达式，以正则表达式基于已有（多）列创建新的一列（常用）</li>
+<li>gather 类似于R里面tidyr包的gather方法</li>
+</ul>
+<h5 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h5><ul>
+<li>sort 按指定（多）列进行排序</li>
+</ul>
+<h5 id="绘图"><a href="#绘图" class="headerlink" title="绘图"></a>绘图</h5><ul>
+<li>plot 基本绘图</li>
+<li>plot hist histogram 直方图</li>
+<li>plot box boxplot 箱线图</li>
+<li>plot line line plot and scatter plot 线图和散点图</li>
+</ul>
+<h5 id="其它"><a href="#其它" class="headerlink" title="其它"></a>其它</h5><ul>
+<li>version 版本信息和检查新版本</li>
+<li>genautocomplete 生成支持Bash自动补全的配置文件，重启Terminal生效。</li>
+</ul>
+<h5 id="使用前注意事项"><a href="#使用前注意事项" class="headerlink" title="使用前注意事项"></a>使用前注意事项</h5><ul>
+<li>输入数据要求每行的列数一致，空行也会报错</li>
+<li>csvtk默认输入数据含有标题行，如没有请开启全局参数-H</li>
+<li>csvtk默认输入数据为CSV格式，如为TSV请开启全局参数-t</li>
+<li>输入数据列名最好唯一无重复</li>
+<li>如果TSV中存在双引号””，请开启全局参数-l</li>
+<li>csvtk默认以#开始的为注释行，若标题行含#，请给全局参数-C指定另一个不常见的字符（如$）</li>
+</ul>
+<hr>
+<h3 id="4-实战"><a href="#4-实战" class="headerlink" title="4.实战"></a>4.实战</h3><h5 id="1-Pretty表格美化"><a href="#1-Pretty表格美化" class="headerlink" title="1.Pretty表格美化"></a>1.Pretty表格美化</h5><p>​    csvtk pretty让打印出来的内容排版更加美丽，其实对于tsv文件影响不大，要加上全局参数-t，但是对于csv文件影响还是挺大的。</p>
+<p><code>注意</code>:csvtk主要用于处理<strong>csv</strong>数据，对于<del>txt</del>数据尽量转化为csv数据整理，否则好多操作都不能实现。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 预览csv</span></span><br><span class="line">head -n3 metadata.csv</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> SampleID,Group,Date,Site,Sequencing,Platform,Species,Batch,BarcodeSequence,LinkerPrimerSequence,ReversePrimer</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> KO1,KO,2017/6/30,Beijing,BGI,HiSeq2500,Arabidopsis,1,ACGCTCGACA,AACMGGATTAGATACCCKG,ACGTCATCCCCACCTTCC</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> KO2,KO,2017/6/30,Beijing,BGI,HiSeq2500,Arabidopsis,1,ATCAGACACG,AACMGGATTAGATACCCKG,ACGTCATCCCCACCTTCC</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 可视化csv</span></span><br><span class="line">csvtk pretty metadata.csv|head -n3</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> SampleID   Group   Date        Site      Sequencing   Platform    Species       Batch   BarcodeSequence   LinkerPrimerSequence   ReversePrimer</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> KO1        KO      2017/6/30   Beijing   BGI          HiSeq2500   Arabidopsis   1       ACGCTCGACA        AACMGGATTAGATACCCKG    ACGTCATCCCCACCTTCC</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> KO2        KO      2017/6/30   Beijing   BGI          HiSeq2500   Arabidopsis   1       ATCAGACACG        AACMGGATTAGATACCCKG    ACGTCATCCCCACCTTCC</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h5 id="2-stat-统计行列"><a href="#2-stat-统计行列" class="headerlink" title="2.stat 统计行列"></a>2.stat 统计行列</h5><p><code>注意</code>csv格式正常统计，但是tsv格式统计列数量错误；</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">csvtk stat metadata.csv </span><br><span class="line"><span class="meta">#</span><span class="bash"> file           num_cols   num_rows</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> metadata.csv         11         18</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash">--注意使用tsv格式文件需要添加参数 -t</span></span><br><span class="line">csvtk stat metadata.tsv -t</span><br><span class="line"><span class="meta">#</span><span class="bash"> file           num_cols   num_rows</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> metadata.tsv          1         18</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="3-headers-打印表头"><a href="#3-headers-打印表头" class="headerlink" title="3.headers 打印表头"></a>3.headers 打印表头</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">  -h, --help      help 文件调用</span><br><span class="line">  -v, --verbose   打印冗余信息，用#号分隔的文件名称</span><br><span class="line"><span class="meta">#</span><span class="bash"> 默认去除<span class="comment">#号注释行，如果存在#号行，-C指定一个不常用字符</span></span></span><br><span class="line">csvtk -t headers otutab.txt -C !</span><br><span class="line"><span class="meta">#</span><span class="bash">OTUID</span></span><br><span class="line"><span class="meta">#</span><span class="bash">KO1</span></span><br><span class="line"><span class="meta">#</span><span class="bash">KO2</span></span><br><span class="line">···</span><br><span class="line"></span><br><span class="line">csvtk headers otutab.txt -t  -v</span><br><span class="line"><span class="meta">#</span><span class="bash"> otutab.txt</span></span><br><span class="line"><span class="meta">#</span><span class="bash">1    <span class="comment">#OTUID</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">2    KO1</span></span><br><span class="line"><span class="meta">#</span><span class="bash">3    KO2</span></span><br><span class="line">···</span><br></pre></td></tr></table></figure>
+
+<h5 id="4-dim-nrow-ncol-文件行列统计"><a href="#4-dim-nrow-ncol-文件行列统计" class="headerlink" title="4.dim/nrow/ncol 文件行列统计"></a>4.dim/nrow/ncol 文件行列统计</h5><p>这里需要注意的式-n参数可以用于多文件统计，没有表头记得加上-H参数。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">      --cols       只打印文件列数量</span><br><span class="line">  -h, --help       调用帮助文件</span><br><span class="line">  -n, --no-files   不打印文件名</span><br><span class="line">      --rows       只打印文件行数量</span><br><span class="line">      --tabular    输出机器友好的tab格式文件</span><br><span class="line"><span class="meta">#</span><span class="bash"> 默认输出列和行数量</span></span><br><span class="line">csvtk -t dim otutab.txt</span><br><span class="line"><span class="meta">#</span><span class="bash">file         num_cols   num_rows</span></span><br><span class="line"><span class="meta">#</span><span class="bash">otutab.txt         19      2,631</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash">仅仅输出行数量</span></span><br><span class="line">csvtk -t nrow otutab.txt </span><br><span class="line"><span class="meta">#</span><span class="bash">2631</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 仅仅输出列数量</span></span><br><span class="line">csvtk ncol otutab.txt  -t</span><br><span class="line"><span class="meta">#</span><span class="bash"> 19</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash">--注意同时统计多个文件可以在后面加上-n参数</span></span><br><span class="line"></span><br><span class="line">csvtk dim *.txt -t -n</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash">file           num_cols   num_rows</span></span><br><span class="line"><span class="meta">#</span><span class="bash">otutab.txt           19      2,631</span></span><br><span class="line"><span class="meta">#</span><span class="bash">taxonomy.txt          8      2,631</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="5-summary-统计"><a href="#5-summary-统计" class="headerlink" title="5.summary 统计"></a>5.summary 统计</h5><p>选定的数字或文本字段的汇总统计信息(按组分组字段)，注意<strong>不能混用列名和数字标识</strong>。</p>
+<p>所支持的函数：</p>
+<p>countn (count numeric values), min, max, sum,<br> mean, stdev, variance, median, q1, q2, q3,<br> entropy (Shannon entropy),<br> prod (product of the elements)；</p>
+<p>支持的调用语法：</p>
+<p>count, first, last, rand, unique, collapse, countunique。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Flags:</span><br><span class="line">  -n, --decimal-width int   限制浮点数为N个小数点(默认为2)</span><br><span class="line">  -f, --fields strings      统计类型指定：operations on these fields. e.g -f 1:count,1:sum or -f colA:mean. available operations: collapse, count, countn, countunique, entropy, first, last, max, mean, median, min, prod, q1, q2, q3, rand, stdev, sum, uniq, variance</span><br><span class="line">  -g, --groups string       分组，按照行或者列：group via fields. e.g -f 1,2 or -f columnA,columnB</span><br><span class="line">  -h, --help                调用帮助文件</span><br><span class="line">  -i, --ignore-non-numbers   忽略NA值：&quot;NA&quot; or &quot;N/A&quot;</span><br><span class="line">  -S, --rand-seed int       设定随机种子，默认11 &quot;rand&quot; (default 11)</span><br><span class="line">  -s, --separater string    separater for collapsed data (default &quot;; &quot;)</span><br></pre></td></tr></table></figure>
+
+<p>​    下面就一个列进行统计，主要是训练这些常用函数的用法。很多时候可以联合使用。注意经常我们的数据中有NA存在，此时加上-i。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">-对指定列WT2进行求和，获得某样本的总数据量</span></span><br><span class="line">cat otutab.txt | csvtk summary -f WT2:sum -t</span><br><span class="line"><span class="meta">#</span><span class="bash"> 求均值</span></span><br><span class="line">cat otutab.txt | csvtk summary -f WT2:mean -t</span><br><span class="line"><span class="meta">#</span><span class="bash"> 统计该列的长度，即行数</span></span><br><span class="line">cat otutab.txt | csvtk summary -f WT2:countn -t</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash">-对应的max，min和first，last是一个道理，也就是下面的命令同等有效：</span></span><br><span class="line">cat otutab.txt | csvtk summary -f WT2:first -t</span><br><span class="line">cat otutab.txt | csvtk summary -f WT2:max -t</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 统计方差：variance</span></span><br><span class="line">cat otutab.txt | csvtk summary -f WT2:variance -t</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 统计标准差</span></span><br><span class="line">cat otutab.txt | csvtk summary -f WT2:stdev -t</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 提取非重复值</span></span><br><span class="line">cat otutab.txt | csvtk summary -f WT2:uniq -t</span><br><span class="line"><span class="meta">#</span><span class="bash"> 对去除重复值后的值统计数量</span></span><br><span class="line">cat otutab.txt | csvtk summary -f WT2:countunique -t</span><br></pre></td></tr></table></figure>
+
+<p>对多个列同时进行统计：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cat otutab.txt | csvtk summary -f WT2:countunique,OE1:uniq -t</span><br><span class="line">cat otutab.txt | csvtk summary -f WT2:mean,OE1:mean -t</span><br></pre></td></tr></table></figure>
+
+<h5 id="6-join-连接数据框"><a href="#6-join-连接数据框" class="headerlink" title="6.join 连接数据框"></a>6.join 连接数据框</h5><p>​    该功能和R包dplyr的许多功能类似，用法类似，例如这个功能：共有连接，左连接，全部连接。可以支持多个共有列。默认如果不加参数，会进行共有列连接。    </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">csvtk join -h</span><br><span class="line"></span><br><span class="line"> -f, --fields string    Semicolon separated key fields of all files, if given one, we think all the files have the same key columns. Fields of different files should be separated by &quot;;&quot;, e.g -f &quot;1;2&quot; or -f &quot;A,B;C,D&quot; or -f id (default &quot;1&quot;)</span><br><span class="line">  -F, --fuzzy-fields     using fuzzy fields, e.g., -F -f &quot;*name&quot; or -F -f &quot;id123*&quot;</span><br><span class="line">  -h, --help             help for join</span><br><span class="line">  -i, --ignore-case      ignore case</span><br><span class="line">  -k, --keep-unmatched   keep unmatched data of the first file (left join)</span><br><span class="line">  -L, --left-join        left join, equals to -k/--keep-unmatched, exclusive with --outer-join</span><br><span class="line">      --na string        content for filling NA data</span><br><span class="line">  -O, --outer-join       outer join, exclusive with --left-join</span><br></pre></td></tr></table></figure>
+
+<p>​    实例，这里我们的实例都是来自于微生物组分析得到的表格，让大家可以更好的应用于微生物组数据分析和实践。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">-合并OTU表格和注释文件 -f 1 指定第一列为合并公共列</span></span><br><span class="line">csvtk -t join -f 1 otutab.txt taxonomy.txt | csvtk -t dim</span><br><span class="line"><span class="meta">#</span><span class="bash">file   num_cols   num_rows</span></span><br><span class="line"><span class="meta">#</span><span class="bash">-            26      2,631</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 保存结果，供后面使用</span></span><br><span class="line">csvtk -t join -f 1 otutab.txt taxonomy.txt &gt; otutax.txt</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 演示一下左连接：仅保留第一个文件的列</span></span><br><span class="line">head otutab.txt &gt; otutab_sub.txt</span><br><span class="line">csvtk -t join -f 1 otutab_sub.txt taxonomy.txt --left-join | csvtk -t dim</span><br><span class="line"><span class="meta">#</span><span class="bash">file   num_cols   num_rows</span></span><br><span class="line"><span class="meta">#</span><span class="bash">-            26          9</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash">--如果左连接第二个表格没有对应的信息，则使用NA填充空位</span></span><br><span class="line">head -n9 taxonomy.txt &gt; taxonomy_sub.txt</span><br><span class="line">csvtk -t join -f 1 otutab_sub.txt taxonomy_sub.txt --na NA --left-join</span><br><span class="line"><span class="meta">#</span><span class="bash">--全部合并，对于空缺位置可以随意标示，0，或者NA或者自己的名字也可以</span></span><br><span class="line">csvtk -t join -f 1 otutab_sub.txt taxonomy_sub.txt --outer-join --na wentao</span><br><span class="line"><span class="meta">#</span><span class="bash"> 通过列名来指定合并列</span></span><br><span class="line">csvtk -t join -f &quot;OTUID;OTUID&quot; otutab.txt taxonomy.txt |csvtk -t dim</span><br></pre></td></tr></table></figure>
+
+<h5 id="7-add-del-header-添加表头—rename列名重命名"><a href="#7-add-del-header-添加表头—rename列名重命名" class="headerlink" title="7.add/del-header 添加表头—rename列名重命名"></a>7.add/del-header 添加表头—rename列名重命名</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 准备一下无表头的表</span></span><br><span class="line">cut -f 1-3 metadata.tsv | tail -n+2 | head -n2 &gt; metatest.txt</span><br><span class="line">cat metatest.txt</span><br><span class="line"><span class="meta">#</span><span class="bash">KO1     KO      2017/6/30</span></span><br><span class="line"><span class="meta">#</span><span class="bash">KO2     KO      2017/6/30</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 添加表头</span></span><br><span class="line">csvtk -t add-header -n SampleID,Group,Date metatest.txt</span><br><span class="line"><span class="meta">#</span><span class="bash">SampleID        Group   Date</span></span><br><span class="line"><span class="meta">#</span><span class="bash">KO1     KO      2017/6/30</span></span><br><span class="line"><span class="meta">#</span><span class="bash">KO2     KO      2017/6/30</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 添加列名</span></span><br><span class="line">seq 3 | csvtk add-header</span><br><span class="line"><span class="meta">#</span><span class="bash">添加后删除列名</span></span><br><span class="line">seq 3 | csvtk add-header | csvtk del-header</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 或者使用-H参数指定无表头防止误删</span></span><br><span class="line">seq 3 | csvtk del-header -H</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash">列名重命名</span></span><br><span class="line">csvtk -t cut -f 1-2 taxonomy.txt |head |csvtk -t rename -f 1-2 -n B,P </span><br><span class="line"><span class="meta">#</span><span class="bash">B,P</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_657,Bacteria</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_2,Bacteria</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="8-文件合并"><a href="#8-文件合并" class="headerlink" title="8.文件合并"></a>8.文件合并</h5><h6 id="8-1-按列合并"><a href="#8-1-按列合并" class="headerlink" title="8.1 按列合并"></a>8.1 按列合并</h6><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 通过第一列合并</span></span><br><span class="line">csvtk -t join -f 1 otutab.txt taxonomy.txt otus_fa.txt |head</span><br><span class="line"><span class="meta">#</span><span class="bash"> 通过共有列名合并</span></span><br><span class="line">csvtk -t join -f OTUID otutab.txt taxonomy.txt otus_fa.txt |head</span><br></pre></td></tr></table></figure>
+
+<h6 id="8-2-按行合并-concat"><a href="#8-2-按行合并-concat" class="headerlink" title="8.2 按行合并-concat"></a>8.2 按行合并-concat</h6><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Flags:</span><br><span class="line">  -h, --help                    help for concat</span><br><span class="line">  -i, --ignore-case             忽略列名 (column name)</span><br><span class="line">  -k, --keep-unmatched          keep blanks even if no any data of a file matches</span><br><span class="line">  -u, --unmatched-repl string   replacement for unmatched data</span><br><span class="line"><span class="meta">#</span><span class="bash"> 需要列名一样， 但是顺序可以不一样，并去除多余表头</span></span><br><span class="line">wc -l otutab_sub.txt otutab.txt </span><br><span class="line">csvtk -t concat otutab_sub.txt otutab.txt | wc -l</span><br><span class="line"><span class="meta">#</span><span class="bash"> 不同时默认共有列合并，-i忽略大小写</span></span><br><span class="line">csvtk -t concat otutab_sub.txt otutab.txt -i | csvtk -t stat</span><br><span class="line"><span class="meta">#</span><span class="bash"> -u 将未匹配上的行使用Unmached补全</span></span><br><span class="line">csvtk concat otutab_sub.txt otutab.txt -u Unmached | csvtk -t stat</span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="9-join-summary分组统计"><a href="#9-join-summary分组统计" class="headerlink" title="9.join+summary分组统计"></a>9.join+summary分组统计</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> -g 参数指定分组</span></span><br><span class="line">cat otutax.txt | csvtk -t summary -i -f  OE2:mean,WT2:mean -g Phylum</span><br><span class="line"><span class="meta">#</span><span class="bash"> 指定多个分组</span></span><br><span class="line">cat otutax.txt | csvtk -t summary -i -f  OE2:mean,WT2:mean -g Phylum,Class</span><br></pre></td></tr></table></figure>
+
+<h5 id="10-transpose-转置数据框"><a href="#10-transpose-转置数据框" class="headerlink" title="10.transpose 转置数据框"></a>10.transpose 转置数据框</h5><p>​    转置这一个步骤相当消耗时间，尤其是宏基因组的较大的表格。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">--转置，提取表头，打印前面几个</span></span><br><span class="line">csvtk -t transpose otutab.txt |csvtk -t headers |head</span><br></pre></td></tr></table></figure>
+
+<h5 id="11-cut-列名筛选"><a href="#11-cut-列名筛选" class="headerlink" title="11.cut 列名筛选"></a>11.cut 列名筛选</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> -f 参数可以使用数字指定列 并挑选出来</span></span><br><span class="line">csvtk -t cut -f 1,3 otutab.txt | csvtk -t headers</span><br><span class="line"><span class="meta">#</span><span class="bash"> -f 也可以通过列名来指定并打印列</span></span><br><span class="line">csvtk -t cut -f OE2 otutab.txt | csvtk -t headers</span><br><span class="line"><span class="meta">#</span><span class="bash"> 去掉列只需要在序号前面加上-即可，这里去除第二和第三列</span></span><br><span class="line">csvtk -t cut -f -2,-3 otutab.txt | csvtk -t headers</span><br><span class="line"><span class="meta">#</span><span class="bash"> 指定范围去除某些列，这里去除第二列到第六列</span></span><br><span class="line">csvtk -t cut -f -6--2 otutab.txt | csvtk -t headers</span><br><span class="line"><span class="meta">#</span><span class="bash"> 注意负号添加在列名字前面同样有效</span></span><br><span class="line">csvtk -t cut -f -OE1 otutab.txt | csvtk -t headers</span><br></pre></td></tr></table></figure>
+
+<p>使用-F参数，使用双引号，可以使用正则而表达式。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 筛选W和OE开头的列</span></span><br><span class="line">csvtk -t cut -F -f &quot;OTUID,W*,OE*&quot; otutab.txt | csvtk -t headers</span><br><span class="line"><span class="meta">#</span><span class="bash">--无论是按照数字还是列名指定列，这个顺序就是打印出来的顺序。</span></span><br><span class="line">csvtk -t cut -F -f &quot;OTUID,OE1,WT1&quot; otutab.txt | csvtk -t headers</span><br></pre></td></tr></table></figure>
+
+<h5 id="12-csv2md-表格转化为markdown格式"><a href="#12-csv2md-表格转化为markdown格式" class="headerlink" title="12.csv2md 表格转化为markdown格式"></a>12.csv2md 表格转化为markdown格式</h5><p>​    在用markdown写笔记，或做网页时，经常需要把表格排版为markdown格式，手动排版非常耗时。使用此工具会极方便</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cut -f 1-7 metadata.tsv | csvtk -t csv2md</span><br><span class="line">SampleID|Group|Date     |Site     |CRA       |CRR      |BarcodeSequence</span><br><span class="line">:-------|:----|:--------|:--------|:---------|:--------|:--------------</span><br><span class="line">KO1     |KO   |2017/6/30|Chaoyang |CRA002352 |CRR117575|ACGCTCGACA</span><br><span class="line">KO2     |KO   |2017/6/30|Chaoyang |CRA002352 |CRR117576|ATCAGACACG</span><br><span class="line">KO3     |KO   |2017/7/2 |Changping|CRA002352 |CRR117577|ATATCGCGAG</span><br></pre></td></tr></table></figure>
+
+<h5 id="13-csv2xlsx-转化为xlsx格式"><a href="#13-csv2xlsx-转化为xlsx格式" class="headerlink" title="13.csv2xlsx 转化为xlsx格式"></a>13.csv2xlsx 转化为xlsx格式</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 无需指定输出，会生成 otutab.txt.xlsx 的Excel表格输出</span></span><br><span class="line">csvtk -t csv2xlsx otutab.txt  </span><br><span class="line"><span class="meta">#</span><span class="bash"> -o 指定输出文件名</span></span><br><span class="line">csvtk -t csv2xlsx otutab.txt -o otutab.xlsx</span><br></pre></td></tr></table></figure>
+
+<h5 id="14-xlsx2csv-Excel转换为文本表格"><a href="#14-xlsx2csv-Excel转换为文本表格" class="headerlink" title="14.xlsx2csv Excel转换为文本表格"></a>14.xlsx2csv Excel转换为文本表格</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Flags:</span><br><span class="line">  -h, --help                help for xlsx2csv</span><br><span class="line">  -a, --list-sheets        转化全部的sheet</span><br><span class="line">  -i, --sheet-index int     指定sheet (default 1)</span><br><span class="line">  -n, --sheet-name string   sheet to retrieve</span><br><span class="line"><span class="meta">#</span><span class="bash"> -将xlsx转化为csv文件，显示表格中sheet编号</span> </span><br><span class="line">csvtk xlsx2csv -a otutab.txt.xlsx</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 转化第一张sheet，输出到屏幕</span></span><br><span class="line">csvtk -t xlsx2csv -i 1 otutab.txt.xlsx | head</span><br></pre></td></tr></table></figure>
+
+<h5 id="15-cut-选择列"><a href="#15-cut-选择列" class="headerlink" title="15.cut 选择列"></a>15.cut 选择列</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">例子:</span><br><span class="line"></span><br><span class="line">  1. 选择单个列，根际列序号或者列名</span><br><span class="line">     csvtk cut -f 1</span><br><span class="line">     csvtk cut -f colA</span><br><span class="line">  2. 多个列选择 (可以重复列名，调整顺序)</span><br><span class="line">     csvtk cut -f 1,3,2,1</span><br><span class="line">     csvtk cut -f colA,colB,colA</span><br><span class="line">  3. 选择列可用于列排序</span><br><span class="line">     csvtk cut -f 1,3-5       # 1, 3, 4, 5</span><br><span class="line">     csvtk cut -f 3,5-        # 3rd col, and 5th col to the end 第五列发放最后面</span><br><span class="line">     csvtk cut -f 1-          # 全选列</span><br><span class="line">     csvtk cut -f 2-,1        # move 1th col to the end</span><br><span class="line">  4. 负号放到前面代表去除某一列</span><br><span class="line">     csvtk cut -f -1,-3       # discard 1st and 3rd column</span><br><span class="line">     csvtk cut -f -1--3       # discard 1st to 3rd column</span><br><span class="line">     csvtk cut -f -2-         # discard 2nd and all columns on the right.</span><br><span class="line">     csvtu cut -f -colA,-colB # discard colA and colB</span><br><span class="line"></span><br><span class="line">Flags:</span><br><span class="line">  -f, --fields string   选择列. type &quot;csvtk cut -h&quot; for examples</span><br><span class="line">  -F, --fuzzy-fields    模糊选择，正则表达书，用单引号括起来, e.g., -F -f &quot;*name&quot; or -F -f &quot;id123*&quot;</span><br><span class="line">  -h, --help            help for cut</span><br><span class="line">  -i, --ignore-case     ignore case (column name)</span><br><span class="line">  -u, --uniq-column     deduplicate columns matched by multiple fuzzy column names</span><br><span class="line"><span class="meta">#</span><span class="bash"> 列名选择</span></span><br><span class="line">csvtk -t cut -f OE2 otutab.txt |head</span><br><span class="line"><span class="meta">#</span><span class="bash">OE2</span></span><br><span class="line"><span class="meta">#</span><span class="bash">1610</span></span><br><span class="line"><span class="meta">#</span><span class="bash">497</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 序号选择</span></span><br><span class="line">csvtk -t cut -f 2,3,5 otutab.txt |head</span><br><span class="line"><span class="meta">#</span><span class="bash">KO1     KO2     KO4</span></span><br><span class="line"><span class="meta">#</span><span class="bash">1073    1926    1356</span></span><br><span class="line"><span class="meta">#</span><span class="bash">1965    1233    2241</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 模糊选择</span></span><br><span class="line">csvtk -t cut -F -f &#x27;OE*&#x27; otutab.txt |head</span><br><span class="line"><span class="meta">#</span><span class="bash">OE1     OE2     OE3     OE4     OE5     OE6</span></span><br><span class="line"><span class="meta">#</span><span class="bash">1259    1610    1337    944     1245    1013</span></span><br><span class="line"><span class="meta">#</span><span class="bash">641     497     1225    1271    948     638</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 去除某些列</span></span><br><span class="line">csvtk -t cut -f -1,-2,-3 otutab.txt |head</span><br><span class="line"><span class="meta">#</span><span class="bash">KO3     KO4     KO5     KO6     OE1     OE2</span>  </span><br><span class="line"><span class="meta">#</span><span class="bash">810     1356    1064    1069    1259    1610</span> </span><br><span class="line"><span class="meta">#</span><span class="bash">2368    2241    2901    1835    641     497</span>  </span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 选择第八列以及之后的全部列</span></span><br><span class="line">csvtk -t cut -f 8- otutab.txt |head</span><br><span class="line"><span class="meta">#</span><span class="bash">OE1     OE2     OE3     OE4     OE5     OE6     WT1     WT2     WT3     WT4     WT5     WT6</span></span><br><span class="line"><span class="meta">#</span><span class="bash">1259    1610    1337    944     1245    1013    2303    2512    1698    1974    1441    1544</span></span><br><span class="line"><span class="meta">#</span><span class="bash">641     497     1225    1271    948     638     1286    1499    843     1122    1496    1177</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 选择第八列到第十列</span></span><br><span class="line">csvtk -t cut -f 8-10 otutab.txt |head</span><br><span class="line"><span class="meta">#</span><span class="bash">OE1     OE2     OE3</span></span><br><span class="line"><span class="meta">#</span><span class="bash">259    1610    1337</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="16-uniq-去除重复"><a href="#16-uniq-去除重复" class="headerlink" title="16.uniq 去除重复"></a>16.uniq 去除重复</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 挑选界，对界进行去除重复</span></span><br><span class="line">csvtk -t cut -f 2 taxonomy.txt |csvtk uniq -f 1</span><br><span class="line"><span class="meta">#</span><span class="bash">Kingdom</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Bacteria</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Archaea</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 直接对注释文件某列去除重复，不考虑其他列</span></span><br><span class="line">csvtk -t uniq -t -f 2 taxonomy.txt </span><br><span class="line"><span class="meta">#</span><span class="bash">OTUID,Kingdom,Phylum,Class,Order,Family,Genus,Species</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_657,Bacteria,Actinobacteria,Actinobacteria,Actinomycetales,Thermomonosporaceae,Unassigned,Unassigned</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_1646,Archaea,Thaumarchaeota,Unassigned,Nitrososphaerales,Nitrososphaeraceae,Nitrososphaera,Unassigned</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="17-freq-统计频数"><a href="#17-freq-统计频数" class="headerlink" title="17.freq 统计频数"></a>17.freq 统计频数</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Flags:</span><br><span class="line">  -f, --fields string   select only these fields. e.g -f 1,2 or -f columnA,columnB (default &quot;1&quot;)</span><br><span class="line">  -F, --fuzzy-fields    模糊选择, e.g., -F -f &quot;*name&quot; or -F -f &quot;id123*&quot;</span><br><span class="line">  -i, --ignore-case     ignore case</span><br><span class="line">  -r, --reverse         反转排序</span><br><span class="line">  -n, --sort-by-freq    按照频数排序</span><br><span class="line">  -k, --sort-by-key     按照键排序</span><br><span class="line"><span class="meta">#</span><span class="bash"> 对第二列统计频数</span></span><br><span class="line">csvtk -t freq -f 2 taxonomy.txt </span><br><span class="line"><span class="meta">#</span><span class="bash">Kingdom,frequency</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Archaea,1</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Bacteria,2630</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 按数值反转排序</span></span><br><span class="line">csvtk -t freq -f 2 taxonomy.txt -n -r</span><br><span class="line"><span class="meta">#</span><span class="bash">Kingdom,frequency</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Bacteria,2630</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Archaea,1</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="18-inter-选择多个文件共有列内容"><a href="#18-inter-选择多个文件共有列内容" class="headerlink" title="18.inter 选择多个文件共有列内容"></a>18.inter 选择多个文件共有列内容</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">csvtk -t inter otutab.txt taxonomy.txt |head</span><br><span class="line"><span class="meta">#</span><span class="bash">OTUID</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_2700</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_2092</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="19-grep-指定列匹配-支持正则"><a href="#19-grep-指定列匹配-支持正则" class="headerlink" title="19.grep 指定列匹配(支持正则)"></a>19.grep 指定列匹配(支持正则)</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Flags:</span><br><span class="line"></span><br><span class="line">  -f, --fields string         comma separated key fields, column name or index. e.g. -f 1-3 or -f id,id2 or -F -f &quot;group*&quot; (default &quot;1&quot;)</span><br><span class="line">  -F, --fuzzy-fields          模糊选择, e.g., -F -f &quot;*name&quot; or -F -f &quot;id123*&quot;</span><br><span class="line">  -h, --help                  help for grep</span><br><span class="line">  -i, --ignore-case           ignore case</span><br><span class="line">  -v, --invert                去除匹配上的行</span><br><span class="line">  -n, --line-number           打印行号 (&quot;n&quot;)</span><br><span class="line">  -N, --no-highlight          不高亮</span><br><span class="line">  -p, --pattern strings       优雅答应选项(multiple values supported)</span><br><span class="line">  -P, --pattern-file string   pattern files (one pattern per line)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 选择第3列门是Actinobacteria 的行</span></span><br><span class="line">csvtk -t grep -f 3 -p Actinobacteria taxonomy.txt </span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 可用列表 -P 接匹配列表</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 构建一个id列表，并去除表头</span></span><br><span class="line">csvtk -t cut -f 1 otutab.txt | head | csvtk del-header &gt; id.txt</span><br><span class="line"><span class="meta">#</span><span class="bash"> 使用-P选项后面接列表，比awk筛选更方便</span></span><br><span class="line">csvtk -t grep -f 1 -P id.txt taxonomy.txt</span><br></pre></td></tr></table></figure>
+
+<h5 id="20-filter-列条件过滤"><a href="#20-filter-列条件过滤" class="headerlink" title="20.filter 列条件过滤"></a>20.filter 列条件过滤</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 选择OE2 列序列数量大于500的行</span></span><br><span class="line">csvtk -t filter -f &quot;OE2&gt;500&quot; otutab.txt</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash">支持多列共同筛选</span></span><br><span class="line">csvtk -t filter -f &quot;2-5&gt;300&quot; otutab.txt</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 注意模糊匹配使用-F选项，所有列均满足条件</span></span><br><span class="line">csvtk -t filter -F -f &quot;OE*&gt;500&quot; otutab.txt</span><br><span class="line"><span class="meta">#</span><span class="bash">OTUID,KO1,KO2,KO3,KO4,KO5,KO6,OE1,OE2,OE3,OE4,OE5,OE6,WT1,WT2,WT3,WT4,WT5,WT6</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_657,1073,1926,810,1356,1064,1069,1259,1610,1337,944,1245,1013,2303,2512,1698,1974,1441,1544</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="21-split-数据列拆分为多文件"><a href="#21-split-数据列拆分为多文件" class="headerlink" title="21.split 数据列拆分为多文件"></a>21.split 数据列拆分为多文件</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 按照门进行拆分文件-会以门的名字命名</span></span><br><span class="line">csvtk -t split taxonomy.txt -f Phylum </span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看分出来的文件</span></span><br><span class="line">ls taxonomy-*</span><br><span class="line"><span class="meta">#</span><span class="bash"> 删除这些文件，太多使目录变混乱</span></span><br><span class="line">rm taxonomy-*</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 通过指定-o输出到一个文件夹中</span></span><br><span class="line">mkdir -p split</span><br><span class="line">csvtk -t split taxonomy.txt -f Phylum -o split/</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 指定两个列进行分析</span></span><br><span class="line">csvtk -t split taxonomy.txt -f Phylum,Class  -o split/</span><br></pre></td></tr></table></figure>
+
+<h5 id="22-comb-对每一行的元素进行组合"><a href="#22-comb-对每一行的元素进行组合" class="headerlink" title="22.comb 对每一行的元素进行组合"></a>22.comb 对每一行的元素进行组合</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 两两组合</span></span><br><span class="line">csvtk -t cut -f 1,2,3 taxonomy.txt |head -n 2 |csvtk -t comb -n 2</span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_657,Bacteria</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_657,Actinobacteria</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Bacteria,Actinobacteria</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 三个组合</span></span><br><span class="line">csvtk -t cut -f 1,2,3,4 taxonomy.txt |head -n 2 |csvtk -t comb -n 3</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 断棍模型-单个到全部组合都做出来</span></span><br><span class="line">csvtk -t cut -f 1,2,3,4 taxonomy.txt |head -n 2 |csvtk -t comb -n 0</span><br></pre></td></tr></table></figure>
+
+<h5 id="23-mutate-mutate2-根据规则创建新列"><a href="#23-mutate-mutate2-根据规则创建新列" class="headerlink" title="23.mutate/mutate2 根据规则创建新列"></a>23.mutate/mutate2 根据规则创建新列</h5><p>mutate:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 使用已有列改名 作为新的一列</span></span><br><span class="line">csvtk -t mutate -f Class -n Class2 taxonomy.txt | head -n3</span><br><span class="line"><span class="meta">#</span><span class="bash">OTUID   Kingdom Phylum  Class   Order   Family  Genus   Species Class2</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_657 Bacteria        Actinobacteria  Actinobacteria  Actinomycetales Unassigned      Unassigned      Unassigned      Actinobacteria</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_2   Bacteria        Proteobacteria  Betaproteobacteria      Burkholderiales Comamonadaceae  Pelomonas       Pelomonas_puraquae     Betaproteobacteria</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 复杂一点：将otu表格otu名字种otu部分 提取出来做为group列</span></span><br><span class="line">csvtk -t mutate -f 1 -n group -p &quot;^(.+?)[0-9]&quot; otutab.txt |head -n3</span><br><span class="line"><span class="meta">#</span><span class="bash">OTUID   KO1     KO2     KO3     KO4     KO5     KO6     OE1     OE2     OE3     OE4     OE5     OE6     WT1     WT2     WT3     WT4    WT5      WT6     group</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_657 1073    1926    810     1356    1064    1069    1259    1610    1337    944     1245    1013    2303    2512    1698    1974   1441     1544    ASV_</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_2   1965    1233    2368    2241    2901    1835    641     497     1225    1271    948     638     1286    1499    843     1122   1496     1177    ASV_</span></span><br></pre></td></tr></table></figure>
+
+<p>mutate2:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 使用字符串重复，作为一个新列</span></span><br><span class="line">cut -f 1-3 otutab.txt |csvtk -t mutate2 -t -e &quot; &#x27;abc&#x27; &quot; -n group |head -n3</span><br><span class="line"><span class="meta">#</span><span class="bash">OTUID   KO1     KO2     group</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_657 1073    1926    abc</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_2   1965    1233    abc</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 列 合并，如果是字符串，可以合并在一起</span></span><br><span class="line">cut -f 1-4 taxonomy.txt |csvtk -t mutate2 -n Comname -e &#x27; $Class + &quot;-&quot; + $Phylum &#x27; |head</span><br><span class="line"><span class="meta">#</span><span class="bash">OTUID   Kingdom Phylum  Class   Comname</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_657 Bacteria        Actinobacteria  Actinobacteria  Actinobacteria-Actinobacteria</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_2   Bacteria        Proteobacteria  Betaproteobacteria      Betaproteobacteria-Proteobacteria</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_3   Bacteria        Proteobacteria  Gammaproteobacteria     Gammaproteobacteria-Proteobacteria</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash">如果是数值可以进行基本算数运算-例如两列求和</span></span><br><span class="line">cut -f1-7 otutab.txt |csvtk -t mutate2 -n sum12 -e &#x27; $3 + $2 &#x27; |head</span><br><span class="line"><span class="meta">#</span><span class="bash">OTUID   KO1     KO2     KO3     KO4     KO5     KO6     sum12</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_657 1073    1926    810     1356    1064    1069    2999.00</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_2   1965    1233    2368    2241    2901    1835    3198.00</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 使用逻辑判断，添加新列</span></span><br><span class="line">cut -f1-7 otutab.txt | csvtk -t mutate2 -n sum12 -e &#x27; $2&gt;1000&#x27; |head</span><br><span class="line"><span class="meta">#</span><span class="bash">OTUID   KO1     KO2     KO3     KO4     KO5     KO6     sum12</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_657 1073    1926    810     1356    1064    1069    <span class="literal">true</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_2   1965    1233    2368    2241    2901    1835    <span class="literal">true</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_3   567     460     898     902     1224    854     <span class="literal">false</span></span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 可以使用条件分配逻辑判断的填充</span></span><br><span class="line">cut -f1-7 otutab.txt |csvtk -t mutate2 -n sum12 -e &#x27; $3&gt;1000? &quot;small&quot; : &quot;big&quot;&#x27; |head</span><br><span class="line"><span class="meta">#</span><span class="bash">OTUID   KO1     KO2     KO3     KO4     KO5     KO6     sum12</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_657 1073    1926    810     1356    1064    1069    small</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_2   1965    1233    2368    2241    2901    1835    small</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_3   567     460     898     902     1224    854     big</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="24-collapse-分类汇总-合并同类项"><a href="#24-collapse-分类汇总-合并同类项" class="headerlink" title="24.collapse 分类汇总/合并同类项"></a>24.collapse 分类汇总/合并同类项</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 想知道每个门中有哪些ASV</span></span><br><span class="line">cat taxonomy.txt |csvtk -t collapse -f 1,2,3  -v 1  -s &#x27;;&#x27; | less -S &gt; phylum_ASV.txt</span><br></pre></td></tr></table></figure>
+
+<h5 id="25-sep-指定分隔符分隔一列内容"><a href="#25-sep-指定分隔符分隔一列内容" class="headerlink" title="25.sep 指定分隔符分隔一列内容"></a>25.sep 指定分隔符分隔一列内容</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> -n 指定分隔出来的内容名称，这里指定两个，那就只会分出来两个，多指定几个，那就多分出来几个。</span></span><br><span class="line">csvtk -t sep phylum_ASV.txt -f3 -s &quot;;&quot; -n OTU1,OTU2 --drop | less -S </span><br><span class="line"><span class="meta">#</span><span class="bash">Kingdom Phylum  OTUID   OTU1    OTU2</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Bacteria        Ignavibacteriae ASV_1159;ASV_2278       ASV_1159        ASV_2278</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Archaea Thaumarchaeota  ASV_1646        ASV_1646</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Bacteria        Armatimonadetes ASV_989;ASV_1709;ASV_1839;ASV_2014      ASV_989 ASV_1709</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Bacteria        Gemmatimonadetes        ASV_2825        ASV_2825</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> --merge 会将剩下的内容放到最后一列</span></span><br><span class="line">csvtk -t sep phylum_ASV.txt -f3 -s &quot;;&quot; -n OTU1,OTU2 --merge| less -S</span><br></pre></td></tr></table></figure>
+
+<h5 id="26-gather-表格宽变长-用于绘图"><a href="#26-gather-表格宽变长-用于绘图" class="headerlink" title="26.gather 表格宽变长(用于绘图)"></a>26.gather 表格宽变长(用于绘图)</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 按照第一列作为索引，将数据变为长数据，方便出图</span></span><br><span class="line">cat otutab.txt |csvtk -t gather -k SampleID -v value -f -1 |head</span><br><span class="line"><span class="meta">#</span><span class="bash">OTUID   SampleID        value</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_657 KO1     1073</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_657 KO2     1926</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_657 KO3     810</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 下面使用id和界作为索引，变化为长数据</span></span><br><span class="line">cat otutax.txt |csvtk -t gather -k id -v value -f -1,-21 |head</span><br><span class="line"><span class="meta">#</span><span class="bash">OTUID   Phylum  id      value</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_657 Actinobacteria  KO1     1073</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ASV_657 Actinobacteria  KO2     1926</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="27-fold-归类"><a href="#27-fold-归类" class="headerlink" title="27.fold 归类"></a>27.fold 归类</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 选择门和科这两个等级数据，并去除重复，然后按照门，将科归类到 门后面，默认使用 “;” 分隔</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 某个门中有哪 些科，和collapse有点类似，按; 分隔</span></span><br><span class="line">cat taxonomy.txt | csvtk -t uniq -f Phylum,Class |csvtk -t fold -f Phylum -v Class</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 换用逗号和空格作为分隔符</span></span><br><span class="line">cat taxonomy.txt | csvtk -t uniq -f Phylum,Class |csvtk -t fold -f Phylum -v Class -s &quot;,  &quot;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 下面按照门和钢给OTU做分类</span></span><br><span class="line">cat taxonomy.txt |csvtk -t collapse -f 1,2,3  -v 1  -s &#x27;;&#x27; | head</span><br></pre></td></tr></table></figure>
+
+<h5 id="28-其他功能"><a href="#28-其他功能" class="headerlink" title="28.其他功能"></a>28.其他功能</h5><h6 id="1-csvtk-corr-计算两列之间的皮尔逊相关"><a href="#1-csvtk-corr-计算两列之间的皮尔逊相关" class="headerlink" title="1.csvtk corr 计算两列之间的皮尔逊相关"></a>1.csvtk corr 计算两列之间的皮尔逊相关</h6><p>​    这里使用的txt文件，所以添加了-t全局参数，这里作者帮助文件显示只能计算这一种相关，如果我们做微生物组分析，斯皮尔曼相关更加适合</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">csvtk -t corr -i -f WT1,WT2 otutab.txt </span><br><span class="line"><span class="meta">#</span><span class="bash"> WT1    WT2    0.9373</span></span><br></pre></td></tr></table></figure>
+
+<h6 id="2-csv2json-转化csv格式为json格式"><a href="#2-csv2json-转化csv格式为json格式" class="headerlink" title="2.csv2json 转化csv格式为json格式"></a>2.csv2json 转化csv格式为json格式</h6><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">head -n3 otutab.txt | csvtk -t csv2json</span><br></pre></td></tr></table></figure>
+
+<h6 id="3-splitxlsx-拆分xlsx中的sheet表格"><a href="#3-splitxlsx-拆分xlsx中的sheet表格" class="headerlink" title="3.splitxlsx 拆分xlsx中的sheet表格"></a>3.splitxlsx 拆分xlsx中的sheet表格</h6><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">csvtk xlsx2csv -a otutab.txt.xlsx</span><br></pre></td></tr></table></figure>
+
+
+
+    </div>
+    
+    <div>
+      
+          <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">
+              -------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------
+        </div>
+    
+</div>
+
+
+      
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>阿狒
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://zhengxingsong.github.io/%E7%94%9F%E4%BF%A1/csvtk/" title="csvtk">http://zhengxingsong.github.io/生信/csvtk/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/%E7%94%9F%E4%BF%A1/" rel="tag"><i class="fa fa-tag"></i> 生信</a>
+              <a href="/tags/biosoft/" rel="tag"><i class="fa fa-tag"></i> biosoft</a>
+              <a href="/tags/CommonSoft/" rel="tag"><i class="fa fa-tag"></i> CommonSoft</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/ggplot2/ggplot2%E5%87%BD%E6%95%B0/" rel="prev" title="ggplot2函数">
+      <i class="fa fa-chevron-left"></i> ggplot2函数
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E7%94%9F%E4%BF%A1/seqkit/" rel="next" title="seqkit">
+      seqkit <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%83%8C%E6%99%AF%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">1.背景介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%B7%A5%E5%85%B7%E5%AE%89%E8%A3%85"><span class="nav-number">2.</span> <span class="nav-text">2.工具安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%8F%82%E6%95%B0%E4%BB%8B%E7%BB%8D"><span class="nav-number">3.</span> <span class="nav-text">3.参数介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF"><span class="nav-number">3.0.1.</span> <span class="nav-text">信息</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F%E8%BD%AC%E5%8C%96"><span class="nav-number">3.0.2.</span> <span class="nav-text">格式转化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%9B%86%E5%90%88%E6%93%8D%E4%BD%9C"><span class="nav-number">3.0.3.</span> <span class="nav-text">集合操作</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BC%96%E8%BE%91"><span class="nav-number">3.0.4.</span> <span class="nav-text">编辑</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F"><span class="nav-number">3.0.5.</span> <span class="nav-text">排序</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BB%98%E5%9B%BE"><span class="nav-number">3.0.6.</span> <span class="nav-text">绘图</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%85%B6%E5%AE%83"><span class="nav-number">3.0.7.</span> <span class="nav-text">其它</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%89%8D%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">3.0.8.</span> <span class="nav-text">使用前注意事项</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%AE%9E%E6%88%98"><span class="nav-number">4.</span> <span class="nav-text">4.实战</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-Pretty%E8%A1%A8%E6%A0%BC%E7%BE%8E%E5%8C%96"><span class="nav-number">4.0.1.</span> <span class="nav-text">1.Pretty表格美化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-stat-%E7%BB%9F%E8%AE%A1%E8%A1%8C%E5%88%97"><span class="nav-number">4.0.2.</span> <span class="nav-text">2.stat 统计行列</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-headers-%E6%89%93%E5%8D%B0%E8%A1%A8%E5%A4%B4"><span class="nav-number">4.0.3.</span> <span class="nav-text">3.headers 打印表头</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-dim-nrow-ncol-%E6%96%87%E4%BB%B6%E8%A1%8C%E5%88%97%E7%BB%9F%E8%AE%A1"><span class="nav-number">4.0.4.</span> <span class="nav-text">4.dim&#x2F;nrow&#x2F;ncol 文件行列统计</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-summary-%E7%BB%9F%E8%AE%A1"><span class="nav-number">4.0.5.</span> <span class="nav-text">5.summary 统计</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-join-%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E6%A1%86"><span class="nav-number">4.0.6.</span> <span class="nav-text">6.join 连接数据框</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#7-add-del-header-%E6%B7%BB%E5%8A%A0%E8%A1%A8%E5%A4%B4%E2%80%94rename%E5%88%97%E5%90%8D%E9%87%8D%E5%91%BD%E5%90%8D"><span class="nav-number">4.0.7.</span> <span class="nav-text">7.add&#x2F;del-header 添加表头—rename列名重命名</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#8-%E6%96%87%E4%BB%B6%E5%90%88%E5%B9%B6"><span class="nav-number">4.0.8.</span> <span class="nav-text">8.文件合并</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#8-1-%E6%8C%89%E5%88%97%E5%90%88%E5%B9%B6"><span class="nav-number">4.0.8.1.</span> <span class="nav-text">8.1 按列合并</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#8-2-%E6%8C%89%E8%A1%8C%E5%90%88%E5%B9%B6-concat"><span class="nav-number">4.0.8.2.</span> <span class="nav-text">8.2 按行合并-concat</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#9-join-summary%E5%88%86%E7%BB%84%E7%BB%9F%E8%AE%A1"><span class="nav-number">4.0.9.</span> <span class="nav-text">9.join+summary分组统计</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#10-transpose-%E8%BD%AC%E7%BD%AE%E6%95%B0%E6%8D%AE%E6%A1%86"><span class="nav-number">4.0.10.</span> <span class="nav-text">10.transpose 转置数据框</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#11-cut-%E5%88%97%E5%90%8D%E7%AD%9B%E9%80%89"><span class="nav-number">4.0.11.</span> <span class="nav-text">11.cut 列名筛选</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#12-csv2md-%E8%A1%A8%E6%A0%BC%E8%BD%AC%E5%8C%96%E4%B8%BAmarkdown%E6%A0%BC%E5%BC%8F"><span class="nav-number">4.0.12.</span> <span class="nav-text">12.csv2md 表格转化为markdown格式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#13-csv2xlsx-%E8%BD%AC%E5%8C%96%E4%B8%BAxlsx%E6%A0%BC%E5%BC%8F"><span class="nav-number">4.0.13.</span> <span class="nav-text">13.csv2xlsx 转化为xlsx格式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#14-xlsx2csv-Excel%E8%BD%AC%E6%8D%A2%E4%B8%BA%E6%96%87%E6%9C%AC%E8%A1%A8%E6%A0%BC"><span class="nav-number">4.0.14.</span> <span class="nav-text">14.xlsx2csv Excel转换为文本表格</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#15-cut-%E9%80%89%E6%8B%A9%E5%88%97"><span class="nav-number">4.0.15.</span> <span class="nav-text">15.cut 选择列</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#16-uniq-%E5%8E%BB%E9%99%A4%E9%87%8D%E5%A4%8D"><span class="nav-number">4.0.16.</span> <span class="nav-text">16.uniq 去除重复</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#17-freq-%E7%BB%9F%E8%AE%A1%E9%A2%91%E6%95%B0"><span class="nav-number">4.0.17.</span> <span class="nav-text">17.freq 统计频数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#18-inter-%E9%80%89%E6%8B%A9%E5%A4%9A%E4%B8%AA%E6%96%87%E4%BB%B6%E5%85%B1%E6%9C%89%E5%88%97%E5%86%85%E5%AE%B9"><span class="nav-number">4.0.18.</span> <span class="nav-text">18.inter 选择多个文件共有列内容</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#19-grep-%E6%8C%87%E5%AE%9A%E5%88%97%E5%8C%B9%E9%85%8D-%E6%94%AF%E6%8C%81%E6%AD%A3%E5%88%99"><span class="nav-number">4.0.19.</span> <span class="nav-text">19.grep 指定列匹配(支持正则)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#20-filter-%E5%88%97%E6%9D%A1%E4%BB%B6%E8%BF%87%E6%BB%A4"><span class="nav-number">4.0.20.</span> <span class="nav-text">20.filter 列条件过滤</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#21-split-%E6%95%B0%E6%8D%AE%E5%88%97%E6%8B%86%E5%88%86%E4%B8%BA%E5%A4%9A%E6%96%87%E4%BB%B6"><span class="nav-number">4.0.21.</span> <span class="nav-text">21.split 数据列拆分为多文件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#22-comb-%E5%AF%B9%E6%AF%8F%E4%B8%80%E8%A1%8C%E7%9A%84%E5%85%83%E7%B4%A0%E8%BF%9B%E8%A1%8C%E7%BB%84%E5%90%88"><span class="nav-number">4.0.22.</span> <span class="nav-text">22.comb 对每一行的元素进行组合</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#23-mutate-mutate2-%E6%A0%B9%E6%8D%AE%E8%A7%84%E5%88%99%E5%88%9B%E5%BB%BA%E6%96%B0%E5%88%97"><span class="nav-number">4.0.23.</span> <span class="nav-text">23.mutate&#x2F;mutate2 根据规则创建新列</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#24-collapse-%E5%88%86%E7%B1%BB%E6%B1%87%E6%80%BB-%E5%90%88%E5%B9%B6%E5%90%8C%E7%B1%BB%E9%A1%B9"><span class="nav-number">4.0.24.</span> <span class="nav-text">24.collapse 分类汇总&#x2F;合并同类项</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#25-sep-%E6%8C%87%E5%AE%9A%E5%88%86%E9%9A%94%E7%AC%A6%E5%88%86%E9%9A%94%E4%B8%80%E5%88%97%E5%86%85%E5%AE%B9"><span class="nav-number">4.0.25.</span> <span class="nav-text">25.sep 指定分隔符分隔一列内容</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#26-gather-%E8%A1%A8%E6%A0%BC%E5%AE%BD%E5%8F%98%E9%95%BF-%E7%94%A8%E4%BA%8E%E7%BB%98%E5%9B%BE"><span class="nav-number">4.0.26.</span> <span class="nav-text">26.gather 表格宽变长(用于绘图)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#27-fold-%E5%BD%92%E7%B1%BB"><span class="nav-number">4.0.27.</span> <span class="nav-text">27.fold 归类</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#28-%E5%85%B6%E4%BB%96%E5%8A%9F%E8%83%BD"><span class="nav-number">4.0.28.</span> <span class="nav-text">28.其他功能</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-csvtk-corr-%E8%AE%A1%E7%AE%97%E4%B8%A4%E5%88%97%E4%B9%8B%E9%97%B4%E7%9A%84%E7%9A%AE%E5%B0%94%E9%80%8A%E7%9B%B8%E5%85%B3"><span class="nav-number">4.0.28.1.</span> <span class="nav-text">1.csvtk corr 计算两列之间的皮尔逊相关</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-csv2json-%E8%BD%AC%E5%8C%96csv%E6%A0%BC%E5%BC%8F%E4%B8%BAjson%E6%A0%BC%E5%BC%8F"><span class="nav-number">4.0.28.2.</span> <span class="nav-text">2.csv2json 转化csv格式为json格式</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#3-splitxlsx-%E6%8B%86%E5%88%86xlsx%E4%B8%AD%E7%9A%84sheet%E8%A1%A8%E6%A0%BC"><span class="nav-number">4.0.28.3.</span> <span class="nav-text">3.splitxlsx 拆分xlsx中的sheet表格</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="阿狒"
+      src="/images/header.jpg">
+  <p class="site-author-name" itemprop="name">阿狒</p>
+  <div class="site-description" itemprop="description">人这一生总会死去，你不妨大胆一些，爱一个人，攀一座山，追一个梦，是的，你不妨大胆一些。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhengxingSong" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhengxingSong" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">阿狒</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">74k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:07</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/three-waves.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
